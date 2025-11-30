@@ -448,86 +448,96 @@ public class ReportsPanel extends JPanel {
             document.add(title);
             document.add(new Paragraph(" "));
 
+            // Получаем состояние чекбоксов
+            JCheckBox medicalRecordsCheckbox = findComponentByName(parametersPanel, "medicalRecordsCheckbox");
+            JCheckBox appointmentsCheckbox = findComponentByName(parametersPanel, "appointmentsCheckbox");
+            JCheckBox billingsCheckbox = findComponentByName(parametersPanel, "billingsCheckbox");
+
             // --- Медицинские записи ---
-            Paragraph medRecordsTitle = new Paragraph("Медицинские записи", sectionFont);
-            document.add(medRecordsTitle);
-            document.add(new Paragraph(" "));
+            if (medicalRecordsCheckbox != null && medicalRecordsCheckbox.isSelected()) {
+                Paragraph medRecordsTitle = new Paragraph("Медицинские записи", sectionFont);
+                document.add(medRecordsTitle);
+                document.add(new Paragraph(" "));
 
-            PdfPTable medTable = new PdfPTable(3);
-            medTable.setWidthPercentage(100);
-            medTable.setWidths(new float[]{2, 3, 5});
-            medTable.addCell(new Phrase("Дата", normalFont));
-            medTable.addCell(new Phrase("Врач", normalFont));
-            medTable.addCell(new Phrase("Описание", normalFont));
+                PdfPTable medTable = new PdfPTable(3);
+                medTable.setWidthPercentage(100);
+                medTable.setWidths(new float[]{2, 3, 5});
+                medTable.addCell(new Phrase("Дата", normalFont));
+                medTable.addCell(new Phrase("Врач", normalFont));
+                medTable.addCell(new Phrase("Описание", normalFont));
 
-            // Пример данных
-            Object[][] medRecords = {
-                    {"2025-06-01", "Иванов И.И.", "Общий осмотр, назначены анализы крови"},
-                    {"2025-06-05", "Смирнова А.А.", "Повторный осмотр, результаты анализов в норме"}
-            };
+                Object[][] medRecords = {
+                        {"2025-06-01", "Иванов И.И.", "Общий осмотр, назначены анализы крови"},
+                        {"2025-06-05", "Смирнова А.А.", "Повторный осмотр, результаты анализов в норме"}
+                };
 
-            for (Object[] record : medRecords) {
-                medTable.addCell(new Phrase(record[0].toString(), normalFont));
-                medTable.addCell(new Phrase(record[1].toString(), normalFont));
-                medTable.addCell(new Phrase(record[2].toString(), normalFont));
+                for (Object[] record : medRecords) {
+                    medTable.addCell(new Phrase(record[0].toString(), normalFont));
+                    medTable.addCell(new Phrase(record[1].toString(), normalFont));
+                    medTable.addCell(new Phrase(record[2].toString(), normalFont));
+                }
+
+                document.add(medTable);
+                document.add(new Paragraph(" "));
             }
-
-            document.add(medTable);
-            document.add(new Paragraph(" "));
 
             // --- Назначения ---
-            Paragraph prescriptionsTitle = new Paragraph("Назначения", sectionFont);
-            document.add(prescriptionsTitle);
-            document.add(new Paragraph(" "));
+            if (appointmentsCheckbox != null && appointmentsCheckbox.isSelected()) {
+                Paragraph prescriptionsTitle = new Paragraph("Назначения", sectionFont);
+                document.add(prescriptionsTitle);
+                document.add(new Paragraph(" "));
 
-            PdfPTable prescTable = new PdfPTable(3);
-            prescTable.setWidthPercentage(100);
-            prescTable.setWidths(new float[]{3, 2, 3});
-            prescTable.addCell(new Phrase("Дата", normalFont));
-            prescTable.addCell(new Phrase("Название лекарства", normalFont));
-            prescTable.addCell(new Phrase("Дозировка/Инструкции", normalFont));
+                PdfPTable prescTable = new PdfPTable(3);
+                prescTable.setWidthPercentage(100);
+                prescTable.setWidths(new float[]{3, 2, 3});
+                prescTable.addCell(new Phrase("Дата", normalFont));
+                prescTable.addCell(new Phrase("Название лекарства", normalFont));
+                prescTable.addCell(new Phrase("Дозировка/Инструкции", normalFont));
 
-            Object[][] prescriptions = {
-                    {"2025-06-01", "Парацетамол", "500мг, 2 раза в день"},
-                    {"2025-06-01", "Витамин C", "1 таблетка в день"}
-            };
+                Object[][] prescriptions = {
+                        {"2025-06-01", "Парацетамол", "500мг, 2 раза в день"},
+                        {"2025-06-01", "Витамин C", "1 таблетка в день"}
+                };
 
-            for (Object[] presc : prescriptions) {
-                prescTable.addCell(new Phrase(presc[0].toString(), normalFont));
-                prescTable.addCell(new Phrase(presc[1].toString(), normalFont));
-                prescTable.addCell(new Phrase(presc[2].toString(), normalFont));
+                for (Object[] presc : prescriptions) {
+                    prescTable.addCell(new Phrase(presc[0].toString(), normalFont));
+                    prescTable.addCell(new Phrase(presc[1].toString(), normalFont));
+                    prescTable.addCell(new Phrase(presc[2].toString(), normalFont));
+                }
+
+                document.add(prescTable);
+                document.add(new Paragraph(" "));
             }
-
-            document.add(prescTable);
-            document.add(new Paragraph(" "));
 
             // --- Счета ---
-            Paragraph billsTitle = new Paragraph("Счета", sectionFont);
-            document.add(billsTitle);
-            document.add(new Paragraph(" "));
+            if (billingsCheckbox != null && billingsCheckbox.isSelected()) {
+                Paragraph billsTitle = new Paragraph("Счета", sectionFont);
+                document.add(billsTitle);
+                document.add(new Paragraph(" "));
 
-            PdfPTable billsTable = new PdfPTable(4);
-            billsTable.setWidthPercentage(100);
-            billsTable.setWidths(new float[]{2, 2, 2, 2});
-            billsTable.addCell(new Phrase("Номер счета", normalFont));
-            billsTable.addCell(new Phrase("Дата", normalFont));
-            billsTable.addCell(new Phrase("Сумма", normalFont));
-            billsTable.addCell(new Phrase("Статус", normalFont));
+                PdfPTable billsTable = new PdfPTable(4);
+                billsTable.setWidthPercentage(100);
+                billsTable.setWidths(new float[]{2, 2, 2, 2});
+                billsTable.addCell(new Phrase("Номер счета", normalFont));
+                billsTable.addCell(new Phrase("Дата", normalFont));
+                billsTable.addCell(new Phrase("Сумма", normalFont));
+                billsTable.addCell(new Phrase("Статус", normalFont));
 
-            Object[][] bills = {
-                    {"B001", "2025-06-01", "$150.00", "ОПЛАЧЕН"},
-                    {"B011", "2025-06-02", "$200.00", "ОПЛАЧЕН"},
-                    {"B013", "2025-06-04", "$170.25", "ОПЛАЧЕН"}
-            };
+                Object[][] bills = {
+                        {"B001", "2025-06-01", "$150.00", "ОПЛАЧЕН"},
+                        {"B011", "2025-06-02", "$200.00", "ОПЛАЧЕН"},
+                        {"B013", "2025-06-04", "$170.25", "ОПЛАЧЕН"}
+                };
 
-            for (Object[] bill : bills) {
-                billsTable.addCell(new Phrase(bill[0].toString(), normalFont));
-                billsTable.addCell(new Phrase(bill[1].toString(), normalFont));
-                billsTable.addCell(new Phrase(bill[2].toString(), normalFont));
-                billsTable.addCell(new Phrase(bill[3].toString(), normalFont));
+                for (Object[] bill : bills) {
+                    billsTable.addCell(new Phrase(bill[0].toString(), normalFont));
+                    billsTable.addCell(new Phrase(bill[1].toString(), normalFont));
+                    billsTable.addCell(new Phrase(bill[2].toString(), normalFont));
+                    billsTable.addCell(new Phrase(bill[3].toString(), normalFont));
+                }
+
+                document.add(billsTable);
             }
-
-            document.add(billsTable);
 
             document.close();
 
@@ -541,6 +551,7 @@ public class ReportsPanel extends JPanel {
             JOptionPane.showMessageDialog(null, "Ошибка при создании отчёта: " + e.getMessage());
         }
     }
+
 
     private <T extends Component> T findComponentByName(Container container, String name) {
         for (Component component : container.getComponents()) {
