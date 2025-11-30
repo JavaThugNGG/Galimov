@@ -1,1 +1,21 @@
 admin,admin,Administrator,ADMIN,true
+ivanov,Qwerty45!,Иванов Сергей Петрович,Doctor,true
+apetrova,AnnaVik2024#,Петрова Анна Викторовна,Doctor,true
+dsidorov,DocSid50$,Сидоров Дмитрий Олегович,Doctor,true
+okuznetsova,KuzOlya34!,Кузнецова Ольга Михайловна,Doctor,true
+nvasilyev,Vasya40Strong#,Васильев Николай Сергеевич,Doctor,true
+tbelova,BelTat29@,Белова Татьяна Николаевна,Doctor,true
+agromov,Grom47Power!,Громов Алексей Владимирович,Doctor,true
+emironova,MiraKate31#,Миронова Екатерина Сергеевна,Doctor,true
+ifedorov,FedNik53!,Фёдоров Игорь Никитич,Doctor,true
+msokolova,SokolMar36$,Соколова Мария Павловна,Doctor,true
+aromanov,RomanArt42!,Романов Артём Денисович,Doctor,true
+izaytseva,ZayIra33#,Зайцева Ирина Юрьевна,Doctor,true
+megоров,EgorMax48$,Егоров Максим Степанович,Doctor,true
+skulikova,Kulik37Pro!,Куликова Светлана Аркадьевна,Doctor,true
+ptikhonov,Tikh44Doc#,Тихонов Павел Михайлович,Doctor,true
+ylarionova,LarYul28!,Ларионова Юлия Константиновна,Doctor,true
+gzavyalov,ZavGeo39$,Завьялов Георгий Викторович,Doctor,true
+kryabova,RyabKs32#,Рябова Ксения Дмитриевна,Doctor,true
+omelnikov,MelOleg55!,Мельников Олег Андреевич,Doctor,true
+achernova,ChernAl30$,Чернова Алиса Сергеевна,Doctor,true
