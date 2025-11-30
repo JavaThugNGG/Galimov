@@ -32,10 +32,8 @@ public class DoctorManagementPanel extends JPanel {
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Create top panel with search and buttons
         JPanel topPanel = new JPanel(new BorderLayout());
 
-        // Search panel
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel searchLabel = new JLabel("Поиск:");
         searchField = new JTextField(20);
@@ -45,7 +43,6 @@ public class DoctorManagementPanel extends JPanel {
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
 
-        // Buttons panel
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         addButton = new JButton("Добавить доктора");
         editButton = new JButton("Редактировать");
@@ -62,7 +59,6 @@ public class DoctorManagementPanel extends JPanel {
         topPanel.add(searchPanel, BorderLayout.WEST);
         topPanel.add(buttonsPanel, BorderLayout.EAST);
 
-        // Create table
         String[] columns = {"Идентификатор", "Фио", "Специализация", "Доступность", "Номер телефона"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
@@ -77,11 +73,9 @@ public class DoctorManagementPanel extends JPanel {
 
         JScrollPane scrollPane = new JScrollPane(doctorTable);
 
-        // Add components to panel
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Add action listeners
         searchButton.addActionListener(e -> searchDoctors());
         searchField.addKeyListener(new KeyAdapter() {
             @Override
@@ -100,13 +94,10 @@ public class DoctorManagementPanel extends JPanel {
     }
 
     private void loadDoctors() {
-        // Clear table
         tableModel.setRowCount(0);
 
-        // Load doctors from service
         List<Doctor> doctors = doctorService.getAll();
 
-        // Add doctors to table
         for (Doctor doctor : doctors) {
             Object[] row = {
                     doctor.getId(),
@@ -122,13 +113,10 @@ public class DoctorManagementPanel extends JPanel {
     private void searchDoctors() {
         String query = searchField.getText().trim();
 
-        // Clear table
         tableModel.setRowCount(0);
 
-        // Search doctors
         List<Doctor> doctors = doctorService.search(query);
 
-        // Add doctors to table
         for (Doctor doctor : doctors) {
             Object[] row = {
                     doctor.getId(),
@@ -150,7 +138,6 @@ public class DoctorManagementPanel extends JPanel {
         JPanel formPanel = new JPanel(new GridLayout(10, 2, 10, 10));
         formPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Generate doctor ID
         String doctorId = doctorService.generateDoctorId();
 
         JLabel idLabel = new JLabel("Идентификатор доктора:");
@@ -215,10 +202,8 @@ public class DoctorManagementPanel extends JPanel {
         dialog.add(formPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         saveButton.addActionListener(e -> {
             try {
-                // Validate input
                 String name = nameField.getText().trim();
                 if (name.isEmpty()) {
                     JOptionPane.showMessageDialog(dialog, "Фио не может быть пустым", "Ошибка проверки", JOptionPane.ERROR_MESSAGE);
@@ -261,7 +246,6 @@ public class DoctorManagementPanel extends JPanel {
                     return;
                 }
 
-                // Create doctor object
                 Doctor doctor = new Doctor(
                         idField.getText(),
                         name,
@@ -273,10 +257,9 @@ public class DoctorManagementPanel extends JPanel {
                         specialization,
                         qualificationField.getText().trim(),
                         availability,
-                        0.0 // Default consultation fee
+                        0.0
                 );
 
-                // Save doctor
                 if (doctorService.add(doctor)) {
                     JOptionPane.showMessageDialog(dialog, "Доктор успешно добавлен", "Успешно", JOptionPane.INFORMATION_MESSAGE);
                     dialog.dispose();
@@ -380,10 +363,8 @@ public class DoctorManagementPanel extends JPanel {
         dialog.add(formPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         saveButton.addActionListener(e -> {
             try {
-                // Validate input
                 String name = nameField.getText().trim();
                 if (name.isEmpty()) {
                     JOptionPane.showMessageDialog(dialog, "Фио не может быть пустым", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
@@ -426,7 +407,6 @@ public class DoctorManagementPanel extends JPanel {
                     return;
                 }
 
-                // Update doctor object
                 doctor.setName(name);
                 doctor.setAge(age);
                 doctor.setContact(contact);
@@ -437,7 +417,6 @@ public class DoctorManagementPanel extends JPanel {
                 doctor.setQualification(qualificationField.getText().trim());
                 doctor.setAvailability(availability);
 
-                // Save doctor
                 if (doctorService.update(doctor)) {
                     JOptionPane.showMessageDialog(dialog, "Доктор обновлен успешно", "Успешно", JOptionPane.INFORMATION_MESSAGE);
                     dialog.dispose();
@@ -539,7 +518,6 @@ public class DoctorManagementPanel extends JPanel {
         dialog.add(detailsPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         closeButton.addActionListener(e -> dialog.dispose());
 
         dialog.setVisible(true);

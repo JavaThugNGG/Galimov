@@ -13,7 +13,6 @@ public class DashboardFrame extends JFrame {
     private JPanel menuPanel;
     private JPanel contentPanel;
 
-    // Menu buttons
     private JButton patientsButton;
     private JButton doctorsButton;
     private JButton appointmentsButton;
@@ -34,29 +33,23 @@ public class DashboardFrame extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Main panel with border layout
         mainPanel = new JPanel(new BorderLayout());
 
-        // Create header panel
         JPanel headerPanel = createHeaderPanel();
         mainPanel.add(headerPanel, BorderLayout.NORTH);
 
-        // Create menu panel
         menuPanel = createMenuPanel();
         mainPanel.add(menuPanel, BorderLayout.WEST);
 
-        // Create content panel
         contentPanel = new JPanel();
         contentPanel.setLayout(new BorderLayout());
         contentPanel.setBackground(new Color(240, 248, 255));
         contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Add welcome panel as default content
         showWelcomePanel();
 
         mainPanel.add(contentPanel, BorderLayout.CENTER);
 
-        // Create footer panel
         JPanel footerPanel = createFooterPanel();
         mainPanel.add(footerPanel, BorderLayout.SOUTH);
 
@@ -67,14 +60,12 @@ public class DashboardFrame extends JFrame {
     private JPanel createHeaderPanel() {
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new BorderLayout());
-        headerPanel.setBackground(new Color(70, 130, 180)); // Steel blue
+        headerPanel.setBackground(new Color(70, 130, 180));
         headerPanel.setPreferredSize(new Dimension(1200, 60));
 
-        // Logo and title panel
         JPanel logoTitlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         logoTitlePanel.setBackground(new Color(70, 130, 180));
 
-        // Try to load logo
         try {
             ImageIcon logoIcon = new ImageIcon("logo.png");
             Image img = logoIcon.getImage();
@@ -114,7 +105,6 @@ public class DashboardFrame extends JFrame {
         menuPanel.setBackground(new Color(51, 51, 51));
         menuPanel.setPreferredSize(new Dimension(200, 600));
 
-        // Create menu buttons
         patientsButton = createMenuButton("Пациенты", "icons/patient.png");
         doctorsButton = createMenuButton("Доктора", "icons/doctor.png");
         appointmentsButton = createMenuButton("Назначения", "icons/appointment.png");
@@ -124,7 +114,6 @@ public class DashboardFrame extends JFrame {
         usersButton = createMenuButton("Пользователи", "icons/user.png");
         logoutButton = createMenuButton("Выход", "icons/logout.png");
 
-        // Add buttons to menu panel
         menuPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         menuPanel.add(patientsButton);
         menuPanel.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -139,7 +128,6 @@ public class DashboardFrame extends JFrame {
         menuPanel.add(reportsButton);
         menuPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-        // Only show Users button for admin
         if ("ADMIN".equals(currentUser.getRole())) {
             menuPanel.add(usersButton);
             menuPanel.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -149,7 +137,6 @@ public class DashboardFrame extends JFrame {
         menuPanel.add(logoutButton);
         menuPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        // Add action listeners
         patientsButton.addActionListener(e -> showPatientManagement());
         doctorsButton.addActionListener(e -> showDoctorManagement());
         appointmentsButton.addActionListener(e -> showAppointmentManagement());
@@ -173,7 +160,6 @@ public class DashboardFrame extends JFrame {
         button.setMaximumSize(new Dimension(200, 40));
         button.setPreferredSize(new Dimension(200, 40));
 
-        // Add hover effect
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -216,7 +202,6 @@ public class DashboardFrame extends JFrame {
         statsPanel.setBackground(new Color(240, 248, 255));
         statsPanel.setBorder(new EmptyBorder(50, 50, 50, 50));
 
-        // Add stat cards
         statsPanel.add(createStatCard("Пациенты", "152", new Color(70, 130, 180)));
         statsPanel.add(createStatCard("Доктора", "45", new Color(46, 139, 87)));
         statsPanel.add(createStatCard("Назначения", "37", new Color(255, 140, 0)));

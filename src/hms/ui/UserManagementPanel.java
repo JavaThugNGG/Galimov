@@ -2,7 +2,6 @@ package hms.ui;
 
 import hms.model.User;
 import hms.service.UserService;
-import hms.util.PasswordUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -32,10 +31,8 @@ public class UserManagementPanel extends JPanel {
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Create top panel with search and buttons
         JPanel topPanel = new JPanel(new BorderLayout());
 
-        // Search panel
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel searchLabel = new JLabel("Поиск:");
         searchField = new JTextField(20);
@@ -45,7 +42,6 @@ public class UserManagementPanel extends JPanel {
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
 
-        // Buttons panel
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         addButton = new JButton("Добавить пользователя");
         editButton = new JButton("Редактировать");
@@ -62,7 +58,6 @@ public class UserManagementPanel extends JPanel {
         topPanel.add(searchPanel, BorderLayout.WEST);
         topPanel.add(buttonsPanel, BorderLayout.EAST);
 
-        // Create table
         String[] columns = {"Имя пользователя", "Полное имя", "Роль", "Статус"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
@@ -77,11 +72,9 @@ public class UserManagementPanel extends JPanel {
 
         JScrollPane scrollPane = new JScrollPane(userTable);
 
-        // Add components to panel
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Add action listeners
         searchButton.addActionListener(e -> searchUsers());
         searchField.addKeyListener(new KeyAdapter() {
             @Override
@@ -100,13 +93,10 @@ public class UserManagementPanel extends JPanel {
     }
 
     private void loadUsers() {
-        // Clear table
         tableModel.setRowCount(0);
 
-        // Load users from service
         List<User> users = userService.getAll();
 
-        // Add users to table
         for (User user : users) {
             Object[] row = {
                     user.getUsername(),
@@ -120,14 +110,9 @@ public class UserManagementPanel extends JPanel {
 
     private void searchUsers() {
         String query = searchField.getText().trim();
-
-        // Clear table
         tableModel.setRowCount(0);
-
-        // Search users
         List<User> users = userService.search(query);
 
-        // Add users to table
         for (User user : users) {
             Object[] row = {
                     user.getUsername(),
@@ -186,10 +171,8 @@ public class UserManagementPanel extends JPanel {
         dialog.add(formPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         saveButton.addActionListener(e -> {
             try {
-                // Validate input
                 String username = usernameField.getText().trim();
                 if (username.isEmpty()) {
                     JOptionPane.showMessageDialog(dialog, "Имя пользователя не может быть пустым", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
@@ -220,21 +203,18 @@ public class UserManagementPanel extends JPanel {
                     return;
                 }
 
-                // Check if username already exists
                 if (userService.getById(username) != null) {
                     JOptionPane.showMessageDialog(dialog, "Username already exists", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                // Create user object
                 User user = new User(
                         username,
-                        password, // In a real application, this would be hashed
+                        password,
                         fullName,
                         (String) roleComboBox.getSelectedItem()
                 );
 
-                // Save user
                 if (userService.add(user)) {
                     JOptionPane.showMessageDialog(dialog, "Пользователь успешно добавлен", "Успешно", JOptionPane.INFORMATION_MESSAGE);
                     dialog.dispose();
@@ -313,22 +293,18 @@ public class UserManagementPanel extends JPanel {
         dialog.add(formPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         saveButton.addActionListener(e -> {
             try {
-                // Validate input
                 String fullName = fullNameField.getText().trim();
                 if (fullName.isEmpty()) {
                     JOptionPane.showMessageDialog(dialog, "Полное имя не может быть пустым", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                // Update user object
                 user.setFullName(fullName);
                 user.setRole((String) roleComboBox.getSelectedItem());
                 user.setActive(statusComboBox.getSelectedItem().equals("Active"));
 
-                // Save user
                 if (userService.update(user)) {
                     JOptionPane.showMessageDialog(dialog, "Пользователь успешно обновлен", "Успешно", JOptionPane.INFORMATION_MESSAGE);
                     dialog.dispose();
@@ -355,7 +331,6 @@ public class UserManagementPanel extends JPanel {
 
         String username = (String) userTable.getValueAt(selectedRow, 0);
 
-        // Don't allow deleting the admin user
         if (username.equals("admin")) {
             JOptionPane.showMessageDialog(this, "Невозможно удалить пользователя-администратора", "Ошибка", JOptionPane.ERROR_MESSAGE);
             return;
@@ -429,10 +404,8 @@ public class UserManagementPanel extends JPanel {
         dialog.add(formPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         saveButton.addActionListener(e -> {
             try {
-                // Validate input
                 String password = new String(passwordField.getPassword());
                 String confirmPassword = new String(confirmPasswordField.getPassword());
 
@@ -451,10 +424,8 @@ public class UserManagementPanel extends JPanel {
                     return;
                 }
 
-                // Update user password
-                user.setPassword(password); // In a real application, this would be hashed
+                user.setPassword(password);
 
-                // Save user
                 if (userService.update(user)) {
                     JOptionPane.showMessageDialog(dialog, "Пароль успешно сброшен", "Успешно", JOptionPane.INFORMATION_MESSAGE);
                     dialog.dispose();

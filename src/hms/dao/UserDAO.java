@@ -1,6 +1,7 @@
 package hms.dao;
 
 import hms.model.User;
+
 import java.util.List;
 
 public class UserDAO extends FileBasedDAO<User, String> {
@@ -15,10 +16,10 @@ public class UserDAO extends FileBasedDAO<User, String> {
             String[] data = line.split(",");
             if (data.length >= 4) {
                 User user = new User(
-                        data[0], // username
-                        data[1], // password
-                        data[2], // fullName
-                        data[3]  // role
+                        data[0],
+                        data[1],
+                        data[2],
+                        data[3]
                 );
                 if (data.length >= 5) {
                     user.setActive(Boolean.parseBoolean(data[4]));
@@ -63,7 +64,6 @@ public class UserDAO extends FileBasedDAO<User, String> {
         }
     }
 
-    // Additional method for authentication
     public User authenticate(String username, String password) {
         List<User> users = findAll();
         for (User user : users) {
@@ -76,7 +76,6 @@ public class UserDAO extends FileBasedDAO<User, String> {
         return null;
     }
 
-    // Find users by role
     public List<User> findByRole(String role) {
         return findByProperty("роль", role);
     }

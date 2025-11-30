@@ -15,7 +15,6 @@ public class DoctorService implements ManagementService<Doctor, String> {
 
     @Override
     public boolean add(Doctor doctor) {
-        // Check if doctor ID already exists
         if (doctorDAO.exists(doctor.getId())) {
             return false;
         }
@@ -52,14 +51,11 @@ public class DoctorService implements ManagementService<Doctor, String> {
         return doctorDAO.searchDoctors(query);
     }
 
-    // Additional methods
     public List<Doctor> findBySpecialization(String specialization) {
         return doctorDAO.findBySpecialization(specialization);
     }
 
-    // Generate a unique doctor ID
     public String generateDoctorId() {
-        // Format: D + timestamp (simple approach)
         return "D" + System.currentTimeMillis();
     }
 }

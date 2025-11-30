@@ -11,7 +11,6 @@ public class Doctor extends Person {
     private List<String> availableDays;
     private List<String> availableTimeSlots;
 
-    // Constructor with basic fields
     public Doctor(String id, String name, int age, String contact, String specialization, String availability) {
         super(id, name, age, contact);
         this.specialization = specialization;
@@ -20,7 +19,6 @@ public class Doctor extends Person {
         this.availableTimeSlots = new ArrayList<>();
     }
 
-    // Full constructor
     public Doctor(String id, String name, int age, String contact, String email, String address,
                   String gender, String specialization, String qualification, String availability, double consultationFee) {
         super(id, name, age, contact, email, address, gender);
@@ -32,7 +30,6 @@ public class Doctor extends Person {
         this.availableTimeSlots = new ArrayList<>();
     }
 
-    // Getters and setters
     public String getSpecialization() {
         return specialization;
     }
@@ -69,7 +66,7 @@ public class Doctor extends Person {
     }
 
     public List<String> getAvailableDays() {
-        return new ArrayList<>(availableDays); // Return a copy to maintain encapsulation
+        return new ArrayList<>(availableDays);
     }
 
     public void setAvailableDays(List<String> days) {
@@ -81,7 +78,7 @@ public class Doctor extends Person {
     }
 
     public List<String> getAvailableTimeSlots() {
-        return new ArrayList<>(availableTimeSlots); // Return a copy to maintain encapsulation
+        return new ArrayList<>(availableTimeSlots);
     }
 
     public void setAvailableTimeSlots(List<String> timeSlots) {

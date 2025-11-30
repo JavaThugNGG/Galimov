@@ -25,7 +25,6 @@ public class MedicalRecord implements Serializable {
         this.testResults = new ArrayList<>();
     }
 
-    // Getters and setters
     public String getRecordId() {
         return recordId;
     }

@@ -1,6 +1,7 @@
 package hms.dao;
 
 import hms.model.Medicine;
+
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -18,9 +19,7 @@ public class MedicineDAO extends FileBasedDAO<Medicine, String> {
 
         try {
             String[] data = line.split(",");
-            if (data.length >= 6) { // Need at least 6 fields: ID,Name,Manufacturer,Category,Price,Quantity
-
-                // Validate required fields
+            if (data.length >= 6) {
                 String medicineId = data[0].trim();
                 String name = data[1].trim();
                 String manufacturer = data[2].trim();
@@ -44,12 +43,10 @@ public class MedicineDAO extends FileBasedDAO<Medicine, String> {
 
                 Medicine medicine = new Medicine(medicineId, name, manufacturer, price, quantity);
 
-                // Set category
                 if (!category.isEmpty() && !category.equals("null")) {
                     medicine.setCategory(category);
                 }
 
-                // Set description (index 6)
                 if (data.length >= 7 && !data[6].trim().isEmpty() && !data[6].trim().equals("null")) {
                     medicine.setDescription(data[6].trim());
                 }
@@ -99,7 +96,6 @@ public class MedicineDAO extends FileBasedDAO<Medicine, String> {
         }
     }
 
-    // Additional methods specific to Medicine
     public List<Medicine> findByCategory(String category) {
         return findByProperty("категория", category);
     }
@@ -118,7 +114,6 @@ public class MedicineDAO extends FileBasedDAO<Medicine, String> {
         );
     }
 
-    // Method to update inventory quantity
     public boolean updateQuantity(String medicineId, int newQuantity) {
         if (medicineId == null || newQuantity < 0) return false;
 
@@ -130,7 +125,6 @@ public class MedicineDAO extends FileBasedDAO<Medicine, String> {
         return false;
     }
 
-    // Method to check if a medicine is in stock
     public boolean isInStock(String medicineId, int requiredQuantity) {
         if (medicineId == null || requiredQuantity <= 0) return false;
 
@@ -138,7 +132,6 @@ public class MedicineDAO extends FileBasedDAO<Medicine, String> {
         return medicine != null && medicine.getQuantity() >= requiredQuantity;
     }
 
-    // Method to reduce quantity (for dispensing)
     public boolean reduceQuantity(String medicineId, int quantityToReduce) {
         if (medicineId == null || quantityToReduce <= 0) return false;
 
@@ -150,12 +143,10 @@ public class MedicineDAO extends FileBasedDAO<Medicine, String> {
         return false;
     }
 
-    // Get low stock medicines (quantity < threshold)
     public List<Medicine> getLowStockMedicines(int threshold) {
         return findByPredicate(medicine -> medicine.getQuantity() < threshold);
     }
 
-    // Get out of stock medicines
     public List<Medicine> getOutOfStockMedicines() {
         return findByPredicate(medicine -> medicine.getQuantity() == 0);
     }

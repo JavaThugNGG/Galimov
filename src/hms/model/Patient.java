@@ -11,7 +11,6 @@ public class Patient extends Person {
     private Date registrationDate;
     private List<MedicalRecord> medicalRecords;
 
-    // Constructor
     public Patient(String id, String name, int age, String contact, String disease) {
         super(id, name, age, contact);
         this.disease = disease;
@@ -19,7 +18,6 @@ public class Patient extends Person {
         this.medicalRecords = new ArrayList<>();
     }
 
-    // Full constructor
     public Patient(String id, String name, int age, String contact, String email, String address,
                    String gender, String bloodGroup, String allergies, String disease) {
         super(id, name, age, contact, email, address, gender);
@@ -30,7 +28,6 @@ public class Patient extends Person {
         this.medicalRecords = new ArrayList<>();
     }
 
-    // Getters and setters
     public String getBloodGroup() {
         return bloodGroup;
     }
@@ -60,7 +57,7 @@ public class Patient extends Person {
     }
 
     public List<MedicalRecord> getMedicalRecords() {
-        return new ArrayList<>(medicalRecords); // Return a copy to maintain encapsulation
+        return new ArrayList<>(medicalRecords);
     }
 
     public void addMedicalRecord(MedicalRecord record) {

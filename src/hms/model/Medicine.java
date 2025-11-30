@@ -9,12 +9,11 @@ public class Medicine implements Serializable {
     private String category;
     private double price;
     private int quantity;
-    private String dosage; // For prescriptions
-    private String frequency; // For prescriptions
-    private String duration; // For prescriptions
+    private String dosage;
+    private String frequency;
+    private String duration;
     private String description;
 
-    // Main constructor for inventory
     public Medicine(String medicineId, String name, String manufacturer, double price, int quantity) {
         if (medicineId == null || medicineId.trim().isEmpty()) {
             throw new IllegalArgumentException("Идентификатор лекарства не может быть нулевым или пустым");
@@ -34,11 +33,10 @@ public class Medicine implements Serializable {
         this.manufacturer = manufacturer != null ? manufacturer.trim() : "";
         this.price = price;
         this.quantity = quantity;
-        this.category = ""; // Initialize category
-        this.description = ""; // Initialize description
+        this.category = "";
+        this.description = "";
     }
 
-    // For prescription usage
     public Medicine(String medicineId, String name, String dosage, String frequency, String duration) {
         if (medicineId == null || medicineId.trim().isEmpty()) {
             throw new IllegalArgumentException("Идентификатор лекарства не может быть нулевым или пустым");
@@ -59,7 +57,6 @@ public class Medicine implements Serializable {
         this.quantity = 0;
     }
 
-    // Getters and setters with validation
     public String getMedicineId() {
         return medicineId;
     }
@@ -162,7 +159,6 @@ public class Medicine implements Serializable {
                 (description != null ? description.replaceAll(",", ";") : "");
     }
 
-    // For prescription format
     public String toPrescriptionString() {
         return (name != null ? name : "") + "," +
                 (dosage != null ? dosage : "") + "," +

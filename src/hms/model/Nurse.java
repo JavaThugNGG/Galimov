@@ -6,14 +6,12 @@ public class Nurse extends Person {
     private String qualification;
     private double salary;
 
-    // Constructor
     public Nurse(String id, String name, int age, String contact, String department, String shift) {
         super(id, name, age, contact);
         this.department = department;
         this.shift = shift;
     }
 
-    // Full constructor
     public Nurse(String id, String name, int age, String contact, String email, String address,
                  String gender, String department, String shift, String qualification, double salary) {
         super(id, name, age, contact, email, address, gender);
@@ -23,7 +21,6 @@ public class Nurse extends Person {
         this.salary = salary;
     }
 
-    // Getters and setters
     public String getDepartment() {
         return department;
     }

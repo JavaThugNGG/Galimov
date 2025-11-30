@@ -2,7 +2,6 @@ package hms.ui;
 
 import hms.model.User;
 import hms.service.UserService;
-import hms.util.ValidationUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,23 +27,19 @@ public class LoginFrame extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        // Main panel with background color
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
-        mainPanel.setBackground(new Color(240, 248, 255)); // Light blue background
+        mainPanel.setBackground(new Color(240, 248, 255));
 
-        // Header panel with logo and title
         JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(70, 130, 180)); // Steel blue
-        headerPanel.setPreferredSize(new Dimension(500, 100)); // Increased height for logo
+        headerPanel.setBackground(new Color(70, 130, 180));
+        headerPanel.setPreferredSize(new Dimension(500, 100));
         headerPanel.setLayout(new BorderLayout());
 
-        // Logo and title panel
         JPanel logoTitlePanel = new JPanel();
         logoTitlePanel.setLayout(new BoxLayout(logoTitlePanel, BoxLayout.Y_AXIS));
         logoTitlePanel.setBackground(new Color(70, 130, 180));
 
-        // Try to load logo from multiple possible locations
         ImageIcon logoIcon = loadLogo();
         if (logoIcon != null) {
             JLabel logoLabel = new JLabel(logoIcon);
@@ -61,7 +56,6 @@ public class LoginFrame extends JFrame {
 
         headerPanel.add(logoTitlePanel, BorderLayout.CENTER);
 
-        // Login form panel
         JPanel formPanel = new JPanel();
         formPanel.setLayout(null);
         formPanel.setBackground(new Color(240, 248, 255));
@@ -98,7 +92,6 @@ public class LoginFrame extends JFrame {
         exitButton.setFocusPainted(false);
         formPanel.add(exitButton);
 
-        // Footer panel
         JPanel footerPanel = new JPanel();
         footerPanel.setBackground(new Color(70, 130, 180));
         footerPanel.setPreferredSize(new Dimension(500, 40));
@@ -107,15 +100,12 @@ public class LoginFrame extends JFrame {
         footerLabel.setForeground(Color.WHITE);
         footerPanel.add(footerLabel);
 
-        // Add panels to main panel
         mainPanel.add(headerPanel, BorderLayout.NORTH);
         mainPanel.add(formPanel, BorderLayout.CENTER);
         mainPanel.add(footerPanel, BorderLayout.SOUTH);
 
-        // Add main panel to frame
         add(mainPanel);
 
-        // Add action listeners
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 login();
@@ -128,7 +118,6 @@ public class LoginFrame extends JFrame {
             }
         });
 
-        // Add key listener for Enter key
         passwordField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -142,14 +131,13 @@ public class LoginFrame extends JFrame {
     }
 
     private ImageIcon loadLogo() {
-        // Try multiple possible locations for the logo
         String[] possiblePaths = {
-                "logo.png",                    // Project root
-                "./logo.png",                  // Current directory
-                "src/logo.png",               // In src folder
-                "resources/logo.png",         // In resources folder
-                "images/logo.png",            // In images folder
-                System.getProperty("user.dir") + "/logo.png"  // Absolute path to project root
+                "logo.png",
+                "./logo.png",
+                "src/logo.png",
+                "resources/logo.png",
+                "images/logo.png",
+                System.getProperty("user.dir") + "/logo.png"
         };
 
         for (String path : possiblePaths) {
@@ -161,7 +149,6 @@ public class LoginFrame extends JFrame {
                 if (logoFile.exists()) {
                     ImageIcon originalIcon = new ImageIcon(path);
                     if (originalIcon.getIconWidth() > 0) {
-                        // Scale the logo to appropriate size
                         Image img = originalIcon.getImage();
                         Image scaledImg = img.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
                         System.out.println("Логотип успешно загружен с: " + path);
@@ -173,7 +160,6 @@ public class LoginFrame extends JFrame {
             }
         }
 
-        // Try loading from classpath (if logo is in resources)
         try {
             java.net.URL logoURL = getClass().getClassLoader().getResource("logo.png");
             if (logoURL != null) {
@@ -218,7 +204,6 @@ public class LoginFrame extends JFrame {
 
     public static void main(String[] args) {
         try {
-            // Set system look and feel
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
             e.printStackTrace();

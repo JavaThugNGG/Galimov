@@ -23,7 +23,6 @@ public class Prescription implements Serializable {
         this.dispensed = false;
     }
 
-    // Getters and setters
     public String getPrescriptionId() {
         return prescriptionId;
     }

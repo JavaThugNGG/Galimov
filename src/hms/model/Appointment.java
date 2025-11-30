@@ -9,7 +9,7 @@ public class Appointment implements Serializable {
     private String doctorId;
     private Date appointmentDate;
     private String timeSlot;
-    private String status; // SCHEDULED, COMPLETED, CANCELLED
+    private String status;
     private String description;
     private double fee;
     private boolean isPaid;
@@ -30,7 +30,6 @@ public class Appointment implements Serializable {
         this.appointmentId = appointmentId;
         this.patientId = patientId;
         this.doctorId = doctorId;
-        // Parse date from string in real implementation
         this.appointmentDate = new Date();
         this.timeSlot = timeSlot;
         this.status = status;
@@ -39,7 +38,6 @@ public class Appointment implements Serializable {
         this.isPaid = false;
     }
 
-    // Getters and setters
     public String getAppointmentId() {
         return appointmentId;
     }
@@ -113,7 +111,6 @@ public class Appointment implements Serializable {
     }
 
     public String toFileString() {
-        // Format date to string in real implementation
         return appointmentId + "," + patientId + "," + doctorId + "," + appointmentDate + "," +
                 timeSlot + "," + status + "," + description + "," + fee + "," + isPaid;
     }

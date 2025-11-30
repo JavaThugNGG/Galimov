@@ -1,9 +1,7 @@
 package hms.ui;
 
-import hms.model.Billing;
 import hms.model.Patient;
 import hms.service.PatientService;
-import hms.util.PDFGenerator;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
@@ -45,10 +43,8 @@ public class BillingManagementPanel extends JPanel {
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Create top panel with search and buttons
         JPanel topPanel = new JPanel(new BorderLayout());
 
-        // Search panel
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel searchLabel = new JLabel("Поиск:");
         searchField = new JTextField(20);
@@ -58,7 +54,6 @@ public class BillingManagementPanel extends JPanel {
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
 
-        // Buttons panel
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         addButton = new JButton("Создать счет");
         editButton = new JButton("Редактировать");
@@ -77,7 +72,6 @@ public class BillingManagementPanel extends JPanel {
         topPanel.add(searchPanel, BorderLayout.WEST);
         topPanel.add(buttonsPanel, BorderLayout.EAST);
 
-        // Create table
         String[] columns = {"Идентификатор счета", "Пациент", "Дата", "Сумма", "Статус"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
@@ -92,11 +86,9 @@ public class BillingManagementPanel extends JPanel {
 
         JScrollPane scrollPane = new JScrollPane(billingTable);
 
-        // Add components to panel
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Add action listeners
         searchButton.addActionListener(e -> searchBillings());
         searchField.addKeyListener(new KeyAdapter() {
             @Override
@@ -116,19 +108,13 @@ public class BillingManagementPanel extends JPanel {
     }
 
     private void loadBillings() {
-        // Clear table
         tableModel.setRowCount(0);
-
-        // Add sample data for now
-        // In a real implementation, this would load from a service
         addSampleBillings();
     }
 
     private void addSampleBillings() {
-        // Формат даты
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        // Примеры счетов для пациентов
         Object[][] bills = {
                 {"B001", "Большаков Иван Дмитриевич", "2025-06-01", "$150.00", "ОПЛАЧЕН"},
                 {"B002", "Соколова Мария Андреевна", "2025-06-10", "$200.50", "НЕ ОПЛАЧЕН"},
@@ -176,14 +162,9 @@ public class BillingManagementPanel extends JPanel {
             return;
         }
 
-        // Clear table
         tableModel.setRowCount(0);
-
-        // In a real implementation, this would search from a service
-        // For now, just reload all and filter
         addSampleBillings();
 
-        // Filter rows
         for (int i = tableModel.getRowCount() - 1; i >= 0; i--) {
             boolean match = false;
             for (int j = 0; j < tableModel.getColumnCount(); j++) {
@@ -208,11 +189,9 @@ public class BillingManagementPanel extends JPanel {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Bill header panel
         JPanel headerPanel = new JPanel(new GridLayout(3, 2, 10, 10));
         headerPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
-        // Generate bill ID
         String billId = "B" + System.currentTimeMillis();
 
         JLabel idLabel = new JLabel("Идентификатор счета:");
@@ -226,7 +205,6 @@ public class BillingManagementPanel extends JPanel {
         JLabel patientLabel = new JLabel("Пациент:");
         JComboBox<String> patientComboBox = new JComboBox<>();
 
-        // Load patients
         java.util.List<Patient> patients = patientService.getAll();
         for (Patient patient : patients) {
             patientComboBox.addItem(patient.getId() + " - " + patient.getName());
@@ -239,14 +217,12 @@ public class BillingManagementPanel extends JPanel {
         headerPanel.add(patientLabel);
         headerPanel.add(patientComboBox);
 
-        // Bill items panel
         JPanel itemsPanel = new JPanel(new BorderLayout());
         itemsPanel.setBorder(new EmptyBorder(10, 0, 10, 0));
 
         JLabel itemsLabel = new JLabel("Элементы счета:");
         itemsLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
 
-        // Items table
         String[] columns = {"Описание", "Количество", "Цена за единицу", "Сумма"};
         DefaultTableModel itemsModel = new DefaultTableModel(columns, 0) {
             @Override
@@ -258,7 +234,6 @@ public class BillingManagementPanel extends JPanel {
         JTable itemsTable = new JTable(itemsModel);
         JScrollPane itemsScrollPane = new JScrollPane(itemsTable);
 
-        // Buttons for items
         JPanel itemButtonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton addItemButton = new JButton("Добавить элемент");
         JButton removeItemButton = new JButton("Удалить элемент");
@@ -270,7 +245,6 @@ public class BillingManagementPanel extends JPanel {
         itemsPanel.add(itemsScrollPane, BorderLayout.CENTER);
         itemsPanel.add(itemButtonsPanel, BorderLayout.SOUTH);
 
-        // Summary panel
         JPanel summaryPanel = new JPanel(new GridLayout(4, 2, 10, 10));
         summaryPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
 
@@ -297,7 +271,6 @@ public class BillingManagementPanel extends JPanel {
         summaryPanel.add(totalLabel);
         summaryPanel.add(totalField);
 
-        // Payment panel
         JPanel paymentPanel = new JPanel(new GridLayout(2, 2, 10, 10));
         paymentPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
 
@@ -312,7 +285,6 @@ public class BillingManagementPanel extends JPanel {
         paymentPanel.add(methodLabel);
         paymentPanel.add(methodComboBox);
 
-        // Add all panels to main panel
         mainPanel.add(headerPanel, BorderLayout.NORTH);
         mainPanel.add(itemsPanel, BorderLayout.CENTER);
 
@@ -322,7 +294,6 @@ public class BillingManagementPanel extends JPanel {
 
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        // Button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton saveButton = new JButton("Сохранить счет");
         JButton cancelButton = new JButton("Отменить");
@@ -333,9 +304,7 @@ public class BillingManagementPanel extends JPanel {
         dialog.add(mainPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         addItemButton.addActionListener(e -> {
-            // Show dialog to add item
             showAddItemDialog(dialog, itemsModel, subtotalField, totalField, discountField, taxField);
         });
 
@@ -350,7 +319,6 @@ public class BillingManagementPanel extends JPanel {
             updateBillTotal(itemsModel, subtotalField, totalField, discountField, taxField);
         });
 
-        // Add listeners to discount and tax fields
         discountField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
@@ -367,7 +335,6 @@ public class BillingManagementPanel extends JPanel {
 
         saveButton.addActionListener(e -> {
             try {
-                // Validate input
                 if (patientComboBox.getSelectedIndex() == -1) {
                     JOptionPane.showMessageDialog(dialog, "Выберите пациента", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -378,8 +345,6 @@ public class BillingManagementPanel extends JPanel {
                     return;
                 }
 
-                // In a real implementation, this would save to a service
-                // For now, just add to the table
                 String patientInfo = (String) patientComboBox.getSelectedItem();
                 String patientName = patientInfo.substring(patientInfo.indexOf(" - ") + 3);
 
@@ -449,7 +414,6 @@ public class BillingManagementPanel extends JPanel {
         dialog.add(formPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add listeners to calculate amount
         FocusListener calculateAmount = new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
@@ -467,10 +431,8 @@ public class BillingManagementPanel extends JPanel {
         quantityField.addFocusListener(calculateAmount);
         priceField.addFocusListener(calculateAmount);
 
-        // Add action listeners
         addButton.addActionListener(e -> {
             try {
-                // Validate input
                 String description = descriptionField.getText().trim();
                 if (description.isEmpty()) {
                     JOptionPane.showMessageDialog(dialog, "Описание не может быть пустым", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
@@ -503,7 +465,6 @@ public class BillingManagementPanel extends JPanel {
 
                 double amount = quantity * price;
 
-                // Add to items table
                 Object[] row = {
                         description,
                         quantity,
@@ -513,7 +474,6 @@ public class BillingManagementPanel extends JPanel {
 
                 itemsModel.addRow(row);
 
-                // Update bill total
                 updateBillTotal(itemsModel, subtotalField, totalField, discountField, taxField);
 
                 dialog.dispose();
@@ -532,14 +492,12 @@ public class BillingManagementPanel extends JPanel {
                                  JTextField totalField, JTextField discountField, JTextField taxField) {
         double subtotal = 0.0;
 
-        // Calculate subtotal
         for (int i = 0; i < itemsModel.getRowCount(); i++) {
             String amountStr = (String) itemsModel.getValueAt(i, 3);
             double amount = Double.parseDouble(amountStr.substring(1));
             subtotal += amount;
         }
 
-        // Get discount and tax
         double discount = 0.0;
         try {
             discount = Double.parseDouble(discountField.getText().trim());
@@ -554,12 +512,10 @@ public class BillingManagementPanel extends JPanel {
             taxField.setText("0");
         }
 
-        // Calculate total
         double discountAmount = subtotal * (discount / 100.0);
         double taxAmount = subtotal * (tax / 100.0);
         double total = subtotal - discountAmount + taxAmount;
 
-        // Update fields
         subtotalField.setText(String.format("$%.2f", subtotal));
         totalField.setText(String.format("$%.2f", total));
     }
@@ -593,8 +549,6 @@ public class BillingManagementPanel extends JPanel {
         );
 
         if (option == JOptionPane.YES_OPTION) {
-            // In a real implementation, this would delete from a service
-            // For now, just remove from the table
             tableModel.removeRow(selectedRow);
 
             JOptionPane.showMessageDialog(this, "Счет успешно удален", "Успех", JOptionPane.INFORMATION_MESSAGE);
@@ -623,7 +577,6 @@ public class BillingManagementPanel extends JPanel {
         detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
         detailsPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // Bill details
         JLabel titleLabel = new JLabel("Информация по счета");
         titleLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 18));
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -641,7 +594,6 @@ public class BillingManagementPanel extends JPanel {
         detailsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         detailsPanel.add(infoPanel);
 
-        // Bill items
         JLabel itemsLabel = new JLabel("Элемента счета");
         itemsLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 18));
         itemsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -659,7 +611,6 @@ public class BillingManagementPanel extends JPanel {
         itemsScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         itemsScrollPane.setPreferredSize(new Dimension(550, 200));
 
-        // Add sample items
         Object[] item1 = {"Плата за консультацию", 1, "$50.00", "$50.00"};
         Object[] item2 = {"Лекарство - Парацетамол", 2, "$5.99", "$11.98"};
         Object[] item3 = {"Анализ крови", 1, "$35.00", "$35.00"};
@@ -683,9 +634,7 @@ public class BillingManagementPanel extends JPanel {
         dialog.add(detailsPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         printButton.addActionListener(e -> {
-            // In a real implementation, this would generate a PDF
             JOptionPane.showMessageDialog(dialog, "Счет напечатан успешно", "Успех", JOptionPane.INFORMATION_MESSAGE);
         });
 
@@ -709,7 +658,6 @@ public class BillingManagementPanel extends JPanel {
             PdfWriter.getInstance(document, new java.io.FileOutputStream(outputPath));
             document.open();
 
-            // Загружаем TTF-шрифт с поддержкой кириллицы
             BaseFont bf = BaseFont.createFont("C:/Windows/Fonts/arial.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             Font font = new Font(bf, 12);
 

@@ -1,6 +1,7 @@
 package hms.dao;
 
 import hms.model.Doctor;
+
 import java.util.List;
 
 public class DoctorDAO extends FileBasedDAO<Doctor, String> {
@@ -13,31 +14,28 @@ public class DoctorDAO extends FileBasedDAO<Doctor, String> {
     protected Doctor parseEntity(String line) {
         try {
             String[] data = line.split(",");
-            // Handle basic constructor
             if (data.length == 6) {
                 return new Doctor(
-                        data[0], // id
-                        data[1], // name
-                        Integer.parseInt(data[2]), // age
-                        data[3], // contact
-                        data[4], // specialization
-                        data[5]  // availability
+                        data[0],
+                        data[1],
+                        Integer.parseInt(data[2]),
+                        data[3],
+                        data[4],
+                        data[5]
                 );
-            }
-            // Handle full constructor
-            else if (data.length >= 11) {
+            } else if (data.length >= 11) {
                 return new Doctor(
-                        data[0], // id
-                        data[1], // name
-                        Integer.parseInt(data[2]), // age
-                        data[3], // contact
-                        data[4], // email
-                        data[5], // address
-                        data[6], // gender
-                        data[7], // specialization
-                        data[8], // qualification
-                        data[9], // availability
-                        Double.parseDouble(data[10]) // consultationFee
+                        data[0],
+                        data[1],
+                        Integer.parseInt(data[2]),
+                        data[3],
+                        data[4],
+                        data[5],
+                        data[6],
+                        data[7],
+                        data[8],
+                        data[9],
+                        Double.parseDouble(data[10])
                 );
             }
             return null;
@@ -77,7 +75,6 @@ public class DoctorDAO extends FileBasedDAO<Doctor, String> {
         }
     }
 
-    // Additional methods specific to Doctor
     public List<Doctor> findBySpecialization(String specialization) {
         return findByProperty("специализация", specialization);
     }

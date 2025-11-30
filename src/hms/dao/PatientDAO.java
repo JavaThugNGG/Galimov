@@ -1,6 +1,7 @@
 package hms.dao;
 
 import hms.model.Patient;
+
 import java.util.List;
 
 public class PatientDAO extends FileBasedDAO<Patient, String> {
@@ -13,29 +14,26 @@ public class PatientDAO extends FileBasedDAO<Patient, String> {
     protected Patient parseEntity(String line) {
         try {
             String[] data = line.split(",");
-            // Handle basic constructor with minimal fields
             if (data.length == 5) {
                 return new Patient(
-                        data[0], // id
-                        data[1], // name
-                        Integer.parseInt(data[2]), // age
-                        data[3], // contact
-                        data[4]  // disease
+                        data[0],
+                        data[1],
+                        Integer.parseInt(data[2]),
+                        data[3],
+                        data[4]
                 );
-            }
-            // Handle full constructor with all fields
-            else if (data.length >= 10) {
+            } else if (data.length >= 10) {
                 return new Patient(
-                        data[0], // id
-                        data[1], // name
-                        Integer.parseInt(data[2]), // age
-                        data[3], // contact
-                        data[4], // email
-                        data[5], // address
-                        data[6], // gender
-                        data[7], // bloodGroup
-                        data[8], // allergies
-                        data[9]  // disease
+                        data[0],
+                        data[1],
+                        Integer.parseInt(data[2]),
+                        data[3],
+                        data[4],
+                        data[5],
+                        data[6],
+                        data[7],
+                        data[8],
+                        data[9]
                 );
             }
             return null;
@@ -84,7 +82,6 @@ public class PatientDAO extends FileBasedDAO<Patient, String> {
         }
     }
 
-    // Additional methods specific to Patient
     public List<Patient> findByDisease(String disease) {
         return findByProperty("болезнь", disease);
     }

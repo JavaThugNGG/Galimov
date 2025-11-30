@@ -6,7 +6,7 @@ public class User implements Serializable {
     private String username;
     private String password;
     private String fullName;
-    private String role; // ADMIN, DOCTOR, NURSE, RECEPTIONIST, etc.
+    private String role;
     private boolean active;
 
     public User(String username, String password, String fullName, String role) {
@@ -17,7 +17,6 @@ public class User implements Serializable {
         this.active = true;
     }
 
-    // Getters and setters with validation
     public String getUsername() {
         return username;
     }
@@ -30,7 +29,7 @@ public class User implements Serializable {
     }
 
     public String getPassword() {
-        return password; // In real application, this should be hashed
+        return password;
     }
 
     public void setPassword(String password) {

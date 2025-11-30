@@ -2,7 +2,6 @@ package hms.ui;
 
 import hms.model.Patient;
 import hms.service.PatientService;
-import hms.util.PDFGenerator;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
@@ -12,7 +11,6 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -38,7 +36,6 @@ public class ReportsPanel extends JPanel {
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Create top panel with report type selection
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         JLabel reportTypeLabel = new JLabel("Тип отчета:");
@@ -54,26 +51,21 @@ public class ReportsPanel extends JPanel {
         topPanel.add(reportTypeLabel);
         topPanel.add(reportTypeComboBox);
 
-        // Create parameters panel
         parametersPanel = new JPanel();
         parametersPanel.setLayout(new BoxLayout(parametersPanel, BoxLayout.Y_AXIS));
         parametersPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // Create button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         generateButton = new JButton("Создать отчет");
         buttonPanel.add(generateButton);
 
-        // Add components to panel
         add(topPanel, BorderLayout.NORTH);
         add(parametersPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         reportTypeComboBox.addActionListener(e -> updateParametersPanel());
         generateButton.addActionListener(e -> generateReport());
 
-        // Initialize parameters panel
         updateParametersPanel();
     }
 
@@ -115,7 +107,6 @@ public class ReportsPanel extends JPanel {
 
         parametersPanel.add(formPanel);
 
-        // Add description
         JLabel descriptionLabel = new JLabel("Описаение:");
         descriptionLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
         descriptionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -142,7 +133,6 @@ public class ReportsPanel extends JPanel {
         JComboBox<String> patientComboBox = new JComboBox<>();
         patientComboBox.setName("patientComboBox");
 
-        // Load patients
         java.util.List<Patient> patients = patientService.getAll();
         for (Patient patient : patients) {
             patientComboBox.addItem(patient.getId() + " - " + patient.getName());
@@ -180,7 +170,6 @@ public class ReportsPanel extends JPanel {
         JComboBox<String> doctorComboBox = new JComboBox<>();
         doctorComboBox.setName("doctorComboBox");
 
-        // Add sample doctors
         doctorComboBox.addItem("D001 - Иванов Сергей Петрович");
         doctorComboBox.addItem("D002 - Петрова Анна Викторовна");
         doctorComboBox.addItem("D003 - Сидоров Дмитрий Олегович");
@@ -196,7 +185,7 @@ public class ReportsPanel extends JPanel {
 
         JTextField endDateField = new JTextField(10);
         endDateField.setName("endDateField");
-        // Set end date to 7 days from now
+
         Date endDate = new Date();
         endDate.setTime(endDate.getTime() + 7 * 24 * 60 * 60 * 1000);
         endDateField.setText(new SimpleDateFormat("yyyy-MM-dd").format(endDate));
@@ -217,7 +206,7 @@ public class ReportsPanel extends JPanel {
 
         JTextField startDateField = new JTextField(10);
         startDateField.setName("startDateField");
-        // Set start date to 30 days ago
+
         Date startDate = new Date();
         startDate.setTime(startDate.getTime() - 30 * 24 * 60 * 60 * 1000);
         startDateField.setText(new SimpleDateFormat("yyyy-MM-dd").format(startDate));
@@ -258,7 +247,7 @@ public class ReportsPanel extends JPanel {
 
         JTextField startDateField = new JTextField(10);
         startDateField.setName("startDateField");
-        // Set start date to 30 days ago
+
         Date startDate = new Date();
         startDate.setTime(startDate.getTime() - 30 * 24 * 60 * 60 * 1000);
         startDateField.setText(new SimpleDateFormat("yyyy-MM-dd").format(startDate));
@@ -327,7 +316,7 @@ public class ReportsPanel extends JPanel {
 
         JTextField startDateField = new JTextField(10);
         startDateField.setName("startDateField");
-        // Set start date to first day of current month
+
         Date now = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String currentMonth = sdf.format(now).substring(0, 8) + "01";
@@ -436,24 +425,20 @@ public class ReportsPanel extends JPanel {
             PdfWriter.getInstance(document, new java.io.FileOutputStream(outputPath));
             document.open();
 
-            // Шрифт с поддержкой кириллицы
             BaseFont bf = BaseFont.createFont("C:/Windows/Fonts/arial.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             Font titleFont = new Font(bf, 16, Font.BOLD);
             Font sectionFont = new Font(bf, 14, Font.BOLD);
             Font normalFont = new Font(bf, 12);
 
-            // Заголовок отчёта
             Paragraph title = new Paragraph("Отчёт по пациенту: " + patientName, titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
             document.add(new Paragraph(" "));
 
-            // Получаем состояние чекбоксов
             JCheckBox medicalRecordsCheckbox = findComponentByName(parametersPanel, "medicalRecordsCheckbox");
             JCheckBox appointmentsCheckbox = findComponentByName(parametersPanel, "appointmentsCheckbox");
             JCheckBox billingsCheckbox = findComponentByName(parametersPanel, "billingsCheckbox");
 
-            // --- Медицинские записи ---
             if (medicalRecordsCheckbox != null && medicalRecordsCheckbox.isSelected()) {
                 Paragraph medRecordsTitle = new Paragraph("Медицинские записи", sectionFont);
                 document.add(medRecordsTitle);
@@ -481,7 +466,6 @@ public class ReportsPanel extends JPanel {
                 document.add(new Paragraph(" "));
             }
 
-            // --- Назначения ---
             if (appointmentsCheckbox != null && appointmentsCheckbox.isSelected()) {
                 Paragraph prescriptionsTitle = new Paragraph("Назначения", sectionFont);
                 document.add(prescriptionsTitle);
@@ -509,7 +493,6 @@ public class ReportsPanel extends JPanel {
                 document.add(new Paragraph(" "));
             }
 
-            // --- Счета ---
             if (billingsCheckbox != null && billingsCheckbox.isSelected()) {
                 Paragraph billsTitle = new Paragraph("Счета", sectionFont);
                 document.add(billsTitle);

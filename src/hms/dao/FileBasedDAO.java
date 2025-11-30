@@ -1,14 +1,12 @@
 package hms.dao;
 
 import hms.interfaces.DataAccessObject;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-/**
- * Abstract base class for file-based DAO implementations
- */
 public abstract class FileBasedDAO<T, ID> implements DataAccessObject<T, ID> {
 
     protected String filePath;
@@ -18,7 +16,6 @@ public abstract class FileBasedDAO<T, ID> implements DataAccessObject<T, ID> {
         initializeFile();
     }
 
-    // Initialize the file if it doesn't exist
     private void initializeFile() {
         File file = new File(filePath);
         if (!file.exists()) {
@@ -126,7 +123,6 @@ public abstract class FileBasedDAO<T, ID> implements DataAccessObject<T, ID> {
         return findAll().size();
     }
 
-    // Helper method to write entities to file
     protected boolean writeToFile(List<T> entities) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, false))) {
             for (T entity : entities) {
@@ -140,7 +136,6 @@ public abstract class FileBasedDAO<T, ID> implements DataAccessObject<T, ID> {
         }
     }
 
-    // Helper method to find entities based on a predicate
     public List<T> findByPredicate(Predicate<T> predicate) {
         List<T> entities = findAll();
         List<T> results = new ArrayList<>();
@@ -154,9 +149,11 @@ public abstract class FileBasedDAO<T, ID> implements DataAccessObject<T, ID> {
         return results;
     }
 
-    // Abstract methods to be implemented by subclasses
     protected abstract T parseEntity(String line);
+
     protected abstract String entityToFileString(T entity);
+
     protected abstract ID getIdFromEntity(T entity);
+
     protected abstract boolean matchesProperty(T entity, String propertyName, Object value);
 }

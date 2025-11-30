@@ -25,7 +25,6 @@ public class PDFGenerator {
     private static final Font NORMAL_FONT = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
     private static final Font SMALL_FONT = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL);
 
-    // Generate patient report
     public static File generatePatientReport(Patient patient, List<MedicalRecord> records, String outputPath) {
         if (patient == null || outputPath == null || outputPath.trim().isEmpty()) {
             return null;
@@ -35,7 +34,6 @@ public class PDFGenerator {
         File file = new File(outputPath);
 
         try {
-            // Ensure directory exists
             File parentDir = file.getParentFile();
             if (parentDir != null && !parentDir.exists()) {
                 parentDir.mkdirs();
@@ -44,14 +42,11 @@ public class PDFGenerator {
             PdfWriter.getInstance(document, new FileOutputStream(file));
             document.open();
 
-            // Add hospital header
             addHospitalHeader(document);
 
-            // Add patient information
             document.add(new Paragraph("ОТЧЕТ ПАЦИЕНТА", TITLE_FONT));
             document.add(new Paragraph(" "));
 
-            // Patient details
             document.add(new Paragraph("Данные пациента:", SUBTITLE_FONT));
             document.add(new Paragraph("Идентификатор: " + safeString(patient.getId()), NORMAL_FONT));
             document.add(new Paragraph("Имя: " + safeString(patient.getName()), NORMAL_FONT));
@@ -65,7 +60,6 @@ public class PDFGenerator {
             document.add(new Paragraph("Аллергии: " + safeString(patient.getAllergies()), NORMAL_FONT));
             document.add(new Paragraph(" "));
 
-            // Medical records
             if (records != null && !records.isEmpty()) {
                 document.add(new Paragraph("История болезни:", SUBTITLE_FONT));
                 document.add(new Paragraph(" "));
@@ -84,7 +78,6 @@ public class PDFGenerator {
                 document.add(new Paragraph("Медицинских записей не найдено.", NORMAL_FONT));
             }
 
-            // Add footer
             addFooter(document);
 
             document.close();
@@ -99,7 +92,6 @@ public class PDFGenerator {
         }
     }
 
-    // Generate billing report
     public static File generateBillingReport(Billing billing, Patient patient, String outputPath) {
         if (billing == null || patient == null || outputPath == null || outputPath.trim().isEmpty()) {
             return null;
@@ -109,7 +101,6 @@ public class PDFGenerator {
         File file = new File(outputPath);
 
         try {
-            // Ensure directory exists
             File parentDir = file.getParentFile();
             if (parentDir != null && !parentDir.exists()) {
                 parentDir.mkdirs();
@@ -118,37 +109,30 @@ public class PDFGenerator {
             PdfWriter.getInstance(document, new FileOutputStream(file));
             document.open();
 
-            // Add hospital header
             addHospitalHeader(document);
 
-            // Add invoice header
             document.add(new Paragraph("СЧЕТ", TITLE_FONT));
             document.add(new Paragraph(" "));
 
-            // Add billing information
             document.add(new Paragraph("Счет #: " + safeString(billing.getBillId()), NORMAL_FONT));
             document.add(new Paragraph("Дата: " + formatDate(billing.getBillDate()), NORMAL_FONT));
             document.add(new Paragraph("Статус платежа: " + safeString(billing.getPaymentStatus()), NORMAL_FONT));
             document.add(new Paragraph(" "));
 
-            // Add patient information
             document.add(new Paragraph("Данные пациента:", SUBTITLE_FONT));
             document.add(new Paragraph("Идентификатор: " + safeString(patient.getId()), NORMAL_FONT));
             document.add(new Paragraph("Имя: " + safeString(patient.getName()), NORMAL_FONT));
             document.add(new Paragraph("Контакт: " + safeString(patient.getContact()), NORMAL_FONT));
             document.add(new Paragraph(" "));
 
-            // Add billing items
             document.add(new Paragraph("Платежные реквизиты:", SUBTITLE_FONT));
             document.add(new Paragraph(" "));
 
             PdfPTable table = new PdfPTable(4);
             table.setWidthPercentage(100);
 
-            // Add table headers
             addTableHeader(table, new String[]{"Описаение", "Количество", "Цена за единицу", "Количество"});
 
-            // Add billing items
             double subtotal = 0;
             List<Billing.BillItem> items = billing.getItems();
             if (items != null && !items.isEmpty()) {
@@ -162,7 +146,6 @@ public class PDFGenerator {
                     }
                 }
             } else {
-                // Add sample items if none exist
                 table.addCell(new Phrase("Плата за консультацию", SMALL_FONT));
                 table.addCell(new Phrase("1", SMALL_FONT));
                 table.addCell(new Phrase(String.format("$%.2f", billing.getTotalAmount()), SMALL_FONT));
@@ -173,7 +156,6 @@ public class PDFGenerator {
             document.add(table);
             document.add(new Paragraph(" "));
 
-            // Add summary
             PdfPTable summaryTable = new PdfPTable(2);
             summaryTable.setWidthPercentage(50);
             summaryTable.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -200,12 +182,10 @@ public class PDFGenerator {
             document.add(summaryTable);
             document.add(new Paragraph(" "));
 
-            // Add payment information
             if (billing.getPaymentMethod() != null && !billing.getPaymentMethod().isEmpty()) {
                 document.add(new Paragraph("Способ оплаты: " + billing.getPaymentMethod(), NORMAL_FONT));
             }
 
-            // Add footer
             addFooter(document);
 
             document.close();
@@ -220,7 +200,6 @@ public class PDFGenerator {
         }
     }
 
-    // Generate prescription
     public static File generatePrescription(Prescription prescription, Patient patient, Doctor doctor, String outputPath) {
         Document document = new Document();
         File file = new File(outputPath);
@@ -229,42 +208,34 @@ public class PDFGenerator {
             PdfWriter.getInstance(document, new FileOutputStream(file));
             document.open();
 
-            // Add hospital header
             addHospitalHeader(document);
 
-            // Add prescription header
             document.add(new Paragraph("РЕЦЕПТ", TITLE_FONT));
             document.add(new Paragraph(" "));
 
-            // Add prescription information
             document.add(new Paragraph("Рецепт #: " + prescription.getPrescriptionId(), NORMAL_FONT));
             document.add(new Paragraph("Дата: " + formatDate(prescription.getIssueDate()), NORMAL_FONT));
             document.add(new Paragraph(" "));
 
-            // Add patient information
             document.add(new Paragraph("Данные пациента:", SUBTITLE_FONT));
             document.add(new Paragraph("Имя: " + patient.getName(), NORMAL_FONT));
             document.add(new Paragraph("Идентификатор: " + patient.getId(), NORMAL_FONT));
             document.add(new Paragraph("Возраст: " + patient.getAge(), NORMAL_FONT));
             document.add(new Paragraph(" "));
 
-            // Add doctor information
             document.add(new Paragraph("Данные врача:", SUBTITLE_FONT));
             document.add(new Paragraph("Имя: " + doctor.getName(), NORMAL_FONT));
             document.add(new Paragraph("Специализация: " + doctor.getSpecialization(), NORMAL_FONT));
             document.add(new Paragraph(" "));
 
-            // Add medicines
             document.add(new Paragraph("Лекарства:", SUBTITLE_FONT));
             document.add(new Paragraph(" "));
 
             PdfPTable table = new PdfPTable(4);
             table.setWidthPercentage(100);
 
-            // Add table headers
             addTableHeader(table, new String[]{"Лекарство", "Дозировка", "Частота", "Продолжительность"});
 
-            // Add medicines
             for (Medicine medicine : prescription.getMedicines()) {
                 table.addCell(new Phrase(medicine.getName(), SMALL_FONT));
                 table.addCell(new Phrase(medicine.getDosage(), SMALL_FONT));
@@ -275,21 +246,18 @@ public class PDFGenerator {
             document.add(table);
             document.add(new Paragraph(" "));
 
-            // Add notes
             if (prescription.getNotes() != null && !prescription.getNotes().isEmpty()) {
                 document.add(new Paragraph("Заметки:", SUBTITLE_FONT));
                 document.add(new Paragraph(prescription.getNotes(), NORMAL_FONT));
                 document.add(new Paragraph(" "));
             }
 
-            // Add doctor's signature
             document.add(new Paragraph(" "));
             document.add(new Paragraph(" "));
             document.add(new Paragraph(" "));
             document.add(new Paragraph("____________________", NORMAL_FONT));
             document.add(new Paragraph("Подпись врача", NORMAL_FONT));
 
-            // Add footer
             addFooter(document);
 
             document.close();
@@ -301,7 +269,6 @@ public class PDFGenerator {
         }
     }
 
-    // Helper methods
     private static void addHospitalHeader(Document document) throws DocumentException {
         Paragraph header = new Paragraph("Око", TITLE_FONT);
         header.setAlignment(Element.ALIGN_CENTER);

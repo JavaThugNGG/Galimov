@@ -42,7 +42,6 @@ public class Billing implements Serializable {
         return "СЧЕТ-" + System.currentTimeMillis();
     }
 
-    // Method to add an item and update the total amount
     public void addItem(BillItem item) {
         if (item != null) {
             items.add(item);
@@ -50,23 +49,16 @@ public class Billing implements Serializable {
         }
     }
 
-    // Calculate the total bill amount
     private void calculateTotal() {
         double subtotal = 0.0;
         for (BillItem item : items) {
             subtotal += item.getAmount();
         }
-
-        // Apply discount
         double discountAmount = subtotal * (discount / 100.0);
-
-        // Apply tax
         double taxAmount = subtotal * (tax / 100.0);
-
         totalAmount = subtotal - discountAmount + taxAmount;
     }
 
-    // Getters and setters
     public String getBillId() {
         return billId;
     }
@@ -146,7 +138,6 @@ public class Billing implements Serializable {
                 ", Статус: " + paymentStatus;
     }
 
-    // Inner class for bill items
     public static class BillItem implements Serializable {
         private String description;
         private double amount;

@@ -2,7 +2,6 @@ package hms.ui;
 
 import hms.model.Medicine;
 import hms.service.MedicineService;
-import hms.util.ValidationUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -23,7 +22,7 @@ public class PharmacyManagementPanel extends JPanel {
     private JButton refreshButton;
     private JButton dispenseMedicineButton;
 
-    private boolean samplesAdded = false; // Add this as a class field
+    private boolean samplesAdded = false;
 
     public PharmacyManagementPanel() {
         medicineService = new MedicineService();
@@ -35,10 +34,8 @@ public class PharmacyManagementPanel extends JPanel {
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Create top panel with search and buttons
         JPanel topPanel = new JPanel(new BorderLayout());
 
-        // Search panel
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel searchLabel = new JLabel("Поиск:");
         searchField = new JTextField(20);
@@ -48,7 +45,6 @@ public class PharmacyManagementPanel extends JPanel {
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
 
-        // Buttons panel
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         addButton = new JButton("Добавить лекарство");
         editButton = new JButton("Редактировать");
@@ -65,7 +61,6 @@ public class PharmacyManagementPanel extends JPanel {
         topPanel.add(searchPanel, BorderLayout.WEST);
         topPanel.add(buttonsPanel, BorderLayout.EAST);
 
-        // Create table
         String[] columns = {"Идентификатор", "Имя", "Производитель", "Категория", "Цена", "Количество"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
@@ -80,11 +75,9 @@ public class PharmacyManagementPanel extends JPanel {
 
         JScrollPane scrollPane = new JScrollPane(medicineTable);
 
-        // Add components to panel
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Add action listeners
         searchButton.addActionListener(e -> searchMedicines());
         searchField.addKeyListener(new KeyAdapter() {
             @Override
@@ -102,17 +95,13 @@ public class PharmacyManagementPanel extends JPanel {
         refreshButton.addActionListener(e -> loadMedicines());
     }
 
-    // Fix the sample data loading to prevent recursion
     private void loadMedicines() {
-        // Clear table
         tableModel.setRowCount(0);
 
         try {
-            // Load medicines from service
             List<Medicine> medicines = medicineService.getAll();
             System.out.println("Загруженные " + medicines.size() + " лекарства из службы");
 
-            // If no medicines exist, add samples first
             if (medicines.isEmpty() && !samplesAdded) {
                 System.out.println("Лекарства не найдены, добавляем образцы данных...");
                 addSampleMedicinesDirectly();
@@ -120,7 +109,6 @@ public class PharmacyManagementPanel extends JPanel {
                 System.out.println("После добавления образцов: " + medicines.size() + " лекарства");
             }
 
-            // Add medicines to table
             for (Medicine medicine : medicines) {
                 try {
                     Object[] row = {
@@ -154,7 +142,6 @@ public class PharmacyManagementPanel extends JPanel {
         if (samplesAdded) return;
         samplesAdded = true;
 
-        // Add sample medicines directly to service
         Medicine m1 = new Medicine("M001", "Парацетамол", "ABC Pharma", 5.99, 100);
         m1.setCategory("Облегчение боли");
         m1.setDescription("Обезболивающее лекарство");
@@ -171,7 +158,6 @@ public class PharmacyManagementPanel extends JPanel {
         m4.setCategory("Антигистаминный препарат");
         m4.setDescription("Лекарства от аллергии");
 
-        // Add to service
         medicineService.add(m1);
         medicineService.add(m2);
         medicineService.add(m3);
@@ -181,13 +167,10 @@ public class PharmacyManagementPanel extends JPanel {
     private void searchMedicines() {
         String query = searchField.getText().trim();
 
-        // Clear table
         tableModel.setRowCount(0);
 
-        // Search medicines
         List<Medicine> medicines = medicineService.search(query);
 
-        // Add medicines to table
         for (Medicine medicine : medicines) {
             Object[] row = {
                     medicine.getMedicineId(),
@@ -210,7 +193,6 @@ public class PharmacyManagementPanel extends JPanel {
         JPanel formPanel = new JPanel(new GridLayout(7, 2, 10, 10));
         formPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Generate medicine ID
         String medicineId = medicineService.generateMedicineId();
 
         JLabel idLabel = new JLabel("Идентификатор лекарства:");
@@ -263,10 +245,8 @@ public class PharmacyManagementPanel extends JPanel {
         dialog.add(formPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         saveButton.addActionListener(e -> {
             try {
-                // Validate input
                 String name = nameField.getText().trim();
                 if (name.isEmpty()) {
                     JOptionPane.showMessageDialog(dialog, "Название не может быть пустым", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
@@ -303,7 +283,6 @@ public class PharmacyManagementPanel extends JPanel {
                     return;
                 }
 
-                // Create medicine object
                 Medicine medicine = new Medicine(
                         idField.getText(),
                         name,
@@ -315,7 +294,6 @@ public class PharmacyManagementPanel extends JPanel {
                 medicine.setCategory((String) categoryComboBox.getSelectedItem());
                 medicine.setDescription(descriptionField.getText().trim());
 
-                // Save medicine
                 if (medicineService.add(medicine)) {
                     JOptionPane.showMessageDialog(dialog, "Лекарство успешно добавлено", "Успешно", JOptionPane.INFORMATION_MESSAGE);
                     dialog.dispose();
@@ -407,10 +385,8 @@ public class PharmacyManagementPanel extends JPanel {
         dialog.add(formPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         saveButton.addActionListener(e -> {
             try {
-                // Validate input
                 String name = nameField.getText().trim();
                 if (name.isEmpty()) {
                     JOptionPane.showMessageDialog(dialog, "Название не может быть пустым", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
@@ -447,7 +423,6 @@ public class PharmacyManagementPanel extends JPanel {
                     return;
                 }
 
-                // Update medicine object
                 medicine.setName(name);
                 medicine.setManufacturer(manufacturer);
                 medicine.setCategory((String) categoryComboBox.getSelectedItem());
@@ -455,7 +430,6 @@ public class PharmacyManagementPanel extends JPanel {
                 medicine.setQuantity(quantity);
                 medicine.setDescription(descriptionField.getText().trim());
 
-                // Save medicine
                 if (medicineService.update(medicine)) {
                     JOptionPane.showMessageDialog(dialog, "Лекарство успешно обновлено", "Успешно", JOptionPane.INFORMATION_MESSAGE);
                     dialog.dispose();
@@ -525,7 +499,6 @@ public class PharmacyManagementPanel extends JPanel {
         detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
         detailsPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // Medicine details
         JLabel titleLabel = new JLabel("Информация о лекарствах");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -553,7 +526,6 @@ public class PharmacyManagementPanel extends JPanel {
         dialog.add(detailsPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         closeButton.addActionListener(e -> dialog.dispose());
 
         dialog.setVisible(true);
@@ -574,7 +546,6 @@ public class PharmacyManagementPanel extends JPanel {
                     quantity = Integer.parseInt(quantityObj.toString());
                 }
             } catch (NumberFormatException ex) {
-                // Use default quantity of 1
             }
 
             total += price * quantity;
@@ -587,7 +558,6 @@ public class PharmacyManagementPanel extends JPanel {
         JLabel labelComponent = new JLabel(label);
         labelComponent.setFont(new Font("Arial", Font.BOLD, 12));
 
-        // Fix null pointer issue and handle empty strings
         String displayValue = "N/A";
         if (value != null && !value.trim().isEmpty() && !value.equals("null")) {
             displayValue = value;

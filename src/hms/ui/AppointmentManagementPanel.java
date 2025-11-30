@@ -1,6 +1,5 @@
 package hms.ui;
 
-import hms.model.Appointment;
 import hms.model.Doctor;
 import hms.model.Patient;
 import hms.service.DoctorService;
@@ -9,10 +8,13 @@ import hms.service.PatientService;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.*;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.List;
 
@@ -40,10 +42,8 @@ public class AppointmentManagementPanel extends JPanel {
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Create top panel with search and buttons
         JPanel topPanel = new JPanel(new BorderLayout());
 
-        // Search panel
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel searchLabel = new JLabel("Поиск:");
         searchField = new JTextField(20);
@@ -53,7 +53,6 @@ public class AppointmentManagementPanel extends JPanel {
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
 
-        // Buttons panel
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         addButton = new JButton("Записаться на прием");
         editButton = new JButton("Редактировать");
@@ -70,7 +69,6 @@ public class AppointmentManagementPanel extends JPanel {
         topPanel.add(searchPanel, BorderLayout.WEST);
         topPanel.add(buttonsPanel, BorderLayout.EAST);
 
-        // Create table
         String[] columns = {"Идентификатор записи", "Пациент", "Доктор", "Дата", "Время", "Статус"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
@@ -85,11 +83,9 @@ public class AppointmentManagementPanel extends JPanel {
 
         JScrollPane scrollPane = new JScrollPane(appointmentTable);
 
-        // Add components to panel
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Add action listeners
         searchButton.addActionListener(e -> searchAppointments());
         searchField.addKeyListener(new KeyAdapter() {
             @Override
@@ -108,16 +104,11 @@ public class AppointmentManagementPanel extends JPanel {
     }
 
     private void loadAppointments() {
-        // Clear table
         tableModel.setRowCount(0);
-
-        // Add sample data for now
-        // In a real implementation, this would load from a service
         addSampleAppointments();
     }
 
     private void addSampleAppointments() {
-        // Add some sample appointments for demonstration
         Object[] appt1 = {"A001", "Большаков Иван Дмитриевич", "Иванов Сергей Петрович", "2025-12-01", "09:00", "ЗАПЛАНИРОВАНО"};
         Object[] appt2 = {"A002", "Соколова Мария Андреевна", "Петрова Анна Викторовна", "2025-12-01", "09:30", "ЗАПЛАНИРОВАНО"};
         Object[] appt3 = {"A003", "Кузнецов Сергей Павлович", "Сидоров Дмитрий Олегович", "2025-12-01", "10:00", "ЗАВЕРШЕНО"};
@@ -169,14 +160,9 @@ public class AppointmentManagementPanel extends JPanel {
             return;
         }
 
-        // Clear table
         tableModel.setRowCount(0);
-
-        // In a real implementation, this would search from a service
-        // For now, just reload all and filter
         addSampleAppointments();
 
-        // Filter rows
         for (int i = tableModel.getRowCount() - 1; i >= 0; i--) {
             boolean match = false;
             for (int j = 0; j < tableModel.getColumnCount(); j++) {
@@ -201,7 +187,6 @@ public class AppointmentManagementPanel extends JPanel {
         JPanel formPanel = new JPanel(new GridLayout(7, 2, 10, 10));
         formPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Generate appointment ID
         String appointmentId = "A" + System.currentTimeMillis();
 
         JLabel idLabel = new JLabel("Идентификатор записи:");
@@ -211,7 +196,6 @@ public class AppointmentManagementPanel extends JPanel {
         JLabel patientLabel = new JLabel("Пациент:");
         JComboBox<String> patientComboBox = new JComboBox<>();
 
-        // Load patients
         List<Patient> patients = patientService.getAll();
         for (Patient patient : patients) {
             patientComboBox.addItem(patient.getId() + " - " + patient.getName());
@@ -220,7 +204,6 @@ public class AppointmentManagementPanel extends JPanel {
         JLabel doctorLabel = new JLabel("Доктор:");
         JComboBox<String> doctorComboBox = new JComboBox<>();
 
-        // Load doctors
         List<Doctor> doctors = doctorService.getAll();
         for (Doctor doctor : doctors) {
             doctorComboBox.addItem(doctor.getId() + " - " + doctor.getName() + " (" + doctor.getSpecialization() + ")");
@@ -267,10 +250,8 @@ public class AppointmentManagementPanel extends JPanel {
         dialog.add(formPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         saveButton.addActionListener(e -> {
             try {
-                // Validate input
                 if (patientComboBox.getSelectedIndex() == -1) {
                     JOptionPane.showMessageDialog(dialog, "Выберите пациента", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -287,7 +268,6 @@ public class AppointmentManagementPanel extends JPanel {
                     return;
                 }
 
-                // Validate date format
                 try {
                     SimpleDateFormat sdf = new SimpleDateFormat("гггг-ММ-дд");
                     sdf.setLenient(false);
@@ -297,8 +277,6 @@ public class AppointmentManagementPanel extends JPanel {
                     return;
                 }
 
-                // In a real implementation, this would save to a service
-                // For now, just add to the table
                 String patientInfo = (String) patientComboBox.getSelectedItem();
                 String doctorInfo = (String) doctorComboBox.getSelectedItem();
 
@@ -370,7 +348,6 @@ public class AppointmentManagementPanel extends JPanel {
         JLabel doctorLabel = new JLabel("Доктор:");
         JComboBox<String> doctorComboBox = new JComboBox<>();
 
-        // Load doctors
         List<Doctor> doctors = doctorService.getAll();
         for (Doctor doctor : doctors) {
             doctorComboBox.addItem(doctor.getId() + " - " + doctor.getName() + " (" + doctor.getSpecialization() + ")");
@@ -422,7 +399,6 @@ public class AppointmentManagementPanel extends JPanel {
         dialog.add(formPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         saveButton.addActionListener(e -> {
             try {
                 // Validate input
@@ -442,7 +418,6 @@ public class AppointmentManagementPanel extends JPanel {
                     return;
                 }
 
-                // Validate date format
                 try {
                     SimpleDateFormat sdf = new SimpleDateFormat("гггг-ММ-дд");
                     sdf.setLenient(false);
@@ -452,8 +427,6 @@ public class AppointmentManagementPanel extends JPanel {
                     return;
                 }
 
-                // In a real implementation, this would update in a service
-                // For now, just update the table
                 String patientInfo = (String) patientComboBox.getSelectedItem();
                 String doctorInfo = (String) doctorComboBox.getSelectedItem();
 
@@ -475,7 +448,6 @@ public class AppointmentManagementPanel extends JPanel {
         });
 
         cancelButton.addActionListener(e -> dialog.dispose());
-
         dialog.setVisible(true);
     }
 
@@ -500,8 +472,6 @@ public class AppointmentManagementPanel extends JPanel {
         );
 
         if (option == JOptionPane.YES_OPTION) {
-            // In a real implementation, this would update in a service
-            // For now, just update the table
             appointmentTable.setValueAt("ОТМЕНЕНО", selectedRow, 5);
 
             JOptionPane.showMessageDialog(this, "Приём успешно отменен", "Успех", JOptionPane.INFORMATION_MESSAGE);
@@ -531,7 +501,6 @@ public class AppointmentManagementPanel extends JPanel {
         detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
         detailsPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // Appointment details
         JLabel titleLabel = new JLabel("Информация о записи");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -558,7 +527,6 @@ public class AppointmentManagementPanel extends JPanel {
         dialog.add(detailsPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         closeButton.addActionListener(e -> dialog.dispose());
 
         dialog.setVisible(true);

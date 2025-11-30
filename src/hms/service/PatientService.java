@@ -3,6 +3,7 @@ package hms.service;
 import hms.dao.PatientDAO;
 import hms.interfaces.ManagementService;
 import hms.model.Patient;
+
 import java.util.List;
 
 public class PatientService implements ManagementService<Patient, String> {
@@ -15,7 +16,6 @@ public class PatientService implements ManagementService<Patient, String> {
 
     @Override
     public boolean add(Patient patient) {
-        // Check if patient ID already exists
         if (patientDAO.exists(patient.getId())) {
             return false;
         }
@@ -52,14 +52,11 @@ public class PatientService implements ManagementService<Patient, String> {
         return patientDAO.searchPatients(query);
     }
 
-    // Additional methods
     public List<Patient> findByDisease(String disease) {
         return patientDAO.findByProperty("disease", disease);
     }
 
-    // Generate a unique patient ID
     public String generatePatientId() {
-        // Format: P + timestamp (simple approach)
         return "P" + System.currentTimeMillis();
     }
 }

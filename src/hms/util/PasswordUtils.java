@@ -1,13 +1,10 @@
 package hms.util;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 public class PasswordUtils {
 
-    // Simple password hashing using SHA-256
-    // In a real application, you'd use a more secure method like BCrypt
     public static String hashPassword(String password) {
         if (password == null || password.isEmpty()) {
             throw new IllegalArgumentException("Пароль не может быть нулевым или пустым.");
@@ -28,7 +25,6 @@ public class PasswordUtils {
         }
     }
 
-    // Validate password strength
     public static boolean isStrongPassword(String password) {
         if (password == null || password.length() < 8) {
             return false;
@@ -51,7 +47,6 @@ public class PasswordUtils {
         return hasLetter && hasDigit && hasSpecial;
     }
 
-    // Generate a random password
     public static String generateRandomPassword(int length) {
         if (length < 8) length = 8;
 
@@ -66,7 +61,6 @@ public class PasswordUtils {
         return password.toString();
     }
 
-    // Verify password against hash
     public static boolean verifyPassword(String password, String hash) {
         if (password == null || hash == null) return false;
         return hashPassword(password).equals(hash);

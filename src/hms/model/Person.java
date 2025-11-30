@@ -2,7 +2,6 @@ package hms.model;
 
 import java.io.Serializable;
 
-// Base class for all person entities in the system
 public abstract class Person implements Serializable {
     protected String id;
     protected String name;
@@ -12,18 +11,16 @@ public abstract class Person implements Serializable {
     protected int age;
     protected String gender;
 
-    // Constructor with required fields
     public Person(String id, String name, int age, String contact) {
         this.id = id;
         this.name = name;
         this.age = age;
         this.contact = contact;
-        this.gender = ""; // Default value
-        this.email = ""; // Default value
-        this.address = ""; // Default value
+        this.gender = "";
+        this.email = "";
+        this.address = "";
     }
 
-    // Full constructor
     public Person(String id, String name, int age, String contact, String email, String address, String gender) {
         this.id = id;
         this.name = name;
@@ -34,7 +31,6 @@ public abstract class Person implements Serializable {
         this.gender = gender;
     }
 
-    // Getters and setters with validation
     public String getId() {
         return id;
     }

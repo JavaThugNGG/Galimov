@@ -32,10 +32,8 @@ public class PatientManagementPanel extends JPanel {
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Create top panel with search and buttons
         JPanel topPanel = new JPanel(new BorderLayout());
 
-        // Search panel
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel searchLabel = new JLabel("Поиск:");
         searchField = new JTextField(20);
@@ -45,7 +43,6 @@ public class PatientManagementPanel extends JPanel {
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
 
-        // Buttons panel
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         addButton = new JButton("Добавить пациента");
         editButton = new JButton("Редактировать");
@@ -62,7 +59,6 @@ public class PatientManagementPanel extends JPanel {
         topPanel.add(searchPanel, BorderLayout.WEST);
         topPanel.add(buttonsPanel, BorderLayout.EAST);
 
-        // Create table
         String[] columns = {"Идентификатор", "Фио", "Возраст", "Номер телефона", "Диагноз"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
@@ -77,11 +73,9 @@ public class PatientManagementPanel extends JPanel {
 
         JScrollPane scrollPane = new JScrollPane(patientTable);
 
-        // Add components to panel
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Add action listeners
         searchButton.addActionListener(e -> searchPatients());
         searchField.addKeyListener(new KeyAdapter() {
             @Override
@@ -100,13 +94,10 @@ public class PatientManagementPanel extends JPanel {
     }
 
     private void loadPatients() {
-        // Clear table
         tableModel.setRowCount(0);
 
-        // Load patients from service
         List<Patient> patients = patientService.getAll();
 
-        // Add patients to table
         for (Patient patient : patients) {
             Object[] row = {
                     patient.getId(),
@@ -121,14 +112,9 @@ public class PatientManagementPanel extends JPanel {
 
     private void searchPatients() {
         String query = searchField.getText().trim();
-
-        // Clear table
         tableModel.setRowCount(0);
-
-        // Search patients
         List<Patient> patients = patientService.search(query);
 
-        // Add patients to table
         for (Patient patient : patients) {
             Object[] row = {
                     patient.getId(),
@@ -150,7 +136,6 @@ public class PatientManagementPanel extends JPanel {
         JPanel formPanel = new JPanel(new GridLayout(8, 2, 10, 10));
         formPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Generate patient ID
         String patientId = patientService.generatePatientId();
 
         JLabel idLabel = new JLabel("Идентификатор пациента:");
@@ -205,10 +190,8 @@ public class PatientManagementPanel extends JPanel {
         dialog.add(formPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         saveButton.addActionListener(e -> {
             try {
-                // Validate input
                 String name = nameField.getText().trim();
                 if (name.isEmpty()) {
                     JOptionPane.showMessageDialog(dialog, "Имя не может быть пустым", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
@@ -245,7 +228,6 @@ public class PatientManagementPanel extends JPanel {
                     return;
                 }
 
-                // Create patient object
                 Patient patient = new Patient(
                         idField.getText(),
                         name,
@@ -254,12 +236,11 @@ public class PatientManagementPanel extends JPanel {
                         email,
                         addressField.getText().trim(),
                         genderComboBox.getSelectedItem().toString(),
-                        "", // Blood group
-                        "", // Allergies
+                        "",
+                        "",
                         disease
                 );
 
-                // Save patient
                 if (patientService.add(patient)) {
                     JOptionPane.showMessageDialog(dialog, "Пациент успешно добавлен", "Успешно", JOptionPane.INFORMATION_MESSAGE);
                     dialog.dispose();
@@ -353,10 +334,8 @@ public class PatientManagementPanel extends JPanel {
         dialog.add(formPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         saveButton.addActionListener(e -> {
             try {
-                // Validate input
                 String name = nameField.getText().trim();
                 if (name.isEmpty()) {
                     JOptionPane.showMessageDialog(dialog, "Фио не может быть пустым", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
@@ -393,7 +372,6 @@ public class PatientManagementPanel extends JPanel {
                     return;
                 }
 
-                // Update patient object
                 patient.setName(name);
                 patient.setAge(age);
                 patient.setContact(contact);
@@ -402,7 +380,6 @@ public class PatientManagementPanel extends JPanel {
                 patient.setGender(genderComboBox.getSelectedItem().toString());
                 patient.setDisease(disease);
 
-                // Save patient
                 if (patientService.update(patient)) {
                     JOptionPane.showMessageDialog(dialog, "Пациент обновлен успешно", "Успешно", JOptionPane.INFORMATION_MESSAGE);
                     dialog.dispose();
@@ -416,7 +393,6 @@ public class PatientManagementPanel extends JPanel {
         });
 
         cancelButton.addActionListener(e -> dialog.dispose());
-
         dialog.setVisible(true);
     }
 
@@ -472,7 +448,6 @@ public class PatientManagementPanel extends JPanel {
         detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
         detailsPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // Patient details
         JLabel titleLabel = new JLabel("Информация для пациентов");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -495,7 +470,6 @@ public class PatientManagementPanel extends JPanel {
         detailsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         detailsPanel.add(infoPanel);
 
-        // Add tabs for medical records, appointments, and billing
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Медицинские записи", createMedicalRecordsPanel(patient));
         tabbedPane.addTab("Назначения", createAppointmentsPanel(patient));
@@ -512,7 +486,6 @@ public class PatientManagementPanel extends JPanel {
         dialog.add(tabbedPane, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         closeButton.addActionListener(e -> dialog.dispose());
         printButton.addActionListener(e -> generatePatientReport(patient));
 
@@ -534,7 +507,6 @@ public class PatientManagementPanel extends JPanel {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Create table for medical records
         String[] columns = {"Идентификатор записи", "Дата", "Доктор", "Диагноз", "Лечение"};
         DefaultTableModel model = new DefaultTableModel(columns, 0) {
             @Override
@@ -556,14 +528,11 @@ public class PatientManagementPanel extends JPanel {
         panel.add(scrollPane, BorderLayout.CENTER);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         addButton.addActionListener(e -> {
-            // Show dialog to add medical record
             JOptionPane.showMessageDialog(panel, "Функциональность добавления медицинской карты будет реализована здесь", "Информация", JOptionPane.INFORMATION_MESSAGE);
         });
 
         viewButton.addActionListener(e -> {
-            // Show dialog to view medical record details
             int selectedRow = table.getSelectedRow();
             if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(panel, "Выберите запись для просмотра", "Нет выбора", JOptionPane.WARNING_MESSAGE);
@@ -580,7 +549,6 @@ public class PatientManagementPanel extends JPanel {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Create table for appointments
         String[] columns = {"Идентификатор записи", "Дата", "Время", "Доктор", "Статус"};
         DefaultTableModel model = new DefaultTableModel(columns, 0) {
             @Override
@@ -602,14 +570,11 @@ public class PatientManagementPanel extends JPanel {
         panel.add(scrollPane, BorderLayout.CENTER);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         addButton.addActionListener(e -> {
-            // Show dialog to book appointment
             JOptionPane.showMessageDialog(panel, "Функциональность записи на прием будет реализована здесь", "Информация", JOptionPane.INFORMATION_MESSAGE);
         });
 
         viewButton.addActionListener(e -> {
-            // Show dialog to view appointment details
             int selectedRow = table.getSelectedRow();
             if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(panel, "Выберите встречу для просмотра", "Нет выбора", JOptionPane.WARNING_MESSAGE);
@@ -626,7 +591,6 @@ public class PatientManagementPanel extends JPanel {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Create table for billing
         String[] columns = {"Идентификатор счета", "Дата", "Сумма", "Статус"};
         DefaultTableModel model = new DefaultTableModel(columns, 0) {
             @Override
@@ -648,14 +612,11 @@ public class PatientManagementPanel extends JPanel {
         panel.add(scrollPane, BorderLayout.CENTER);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners
         addButton.addActionListener(e -> {
-            // Show dialog to generate bill
             JOptionPane.showMessageDialog(panel, "Функциональность генерации счетов будет реализована здесь", "Информация", JOptionPane.INFORMATION_MESSAGE);
         });
 
         viewButton.addActionListener(e -> {
-            // Show dialog to view bill details
             int selectedRow = table.getSelectedRow();
             if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(panel, "Выберите счет для просмотра", "Нет выбора", JOptionPane.WARNING_MESSAGE);
@@ -683,7 +644,6 @@ public class PatientManagementPanel extends JPanel {
                 );
 
                 if (option == JOptionPane.YES_OPTION) {
-                    // Open the PDF file with the default system viewer
                     if (Desktop.isDesktopSupported()) {
                         Desktop.getDesktop().open(file);
                     } else {
