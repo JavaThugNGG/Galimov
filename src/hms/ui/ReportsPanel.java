@@ -4,6 +4,16 @@ import hms.model.Patient;
 import hms.service.PatientService;
 import hms.util.PDFGenerator;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -73,7 +83,7 @@ public class ReportsPanel extends JPanel {
         String reportType = (String) reportTypeComboBox.getSelectedItem();
 
         JLabel titleLabel = new JLabel(reportType);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 18));
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         parametersPanel.add(titleLabel);
@@ -107,7 +117,7 @@ public class ReportsPanel extends JPanel {
 
         // Add description
         JLabel descriptionLabel = new JLabel("Описаение:");
-        descriptionLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        descriptionLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
         descriptionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JTextArea descriptionArea = new JTextArea(getReportDescription(reportType));
@@ -115,7 +125,7 @@ public class ReportsPanel extends JPanel {
         descriptionArea.setLineWrap(true);
         descriptionArea.setWrapStyleWord(true);
         descriptionArea.setBackground(getBackground());
-        descriptionArea.setFont(new Font("Arial", Font.PLAIN, 12));
+        descriptionArea.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
         descriptionArea.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         parametersPanel.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -171,9 +181,9 @@ public class ReportsPanel extends JPanel {
         doctorComboBox.setName("doctorComboBox");
 
         // Add sample doctors
-        doctorComboBox.addItem("D001 - Dr. Smith");
-        doctorComboBox.addItem("D002 - Dr. Johnson");
-        doctorComboBox.addItem("D003 - Dr. Williams");
+        doctorComboBox.addItem("D001 - Иванов Сергей Петрович");
+        doctorComboBox.addItem("D002 - Петрова Анна Викторовна");
+        doctorComboBox.addItem("D003 - Сидоров Дмитрий Олегович");
 
         JLabel dateRangeLabel = new JLabel("Диапазон дат:");
         JPanel dateRangePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -393,7 +403,7 @@ public class ReportsPanel extends JPanel {
         try {
             switch (reportType) {
                 case "Отчет пациента":
-                    generatePatientReport();
+                    printPatientReport();
                     break;
                 case "Расписание врачей":
                 case "Описание назначения":
@@ -415,51 +425,120 @@ public class ReportsPanel extends JPanel {
         }
     }
 
-    private void generatePatientReport() {
-        // Get selected patient
-        JComboBox<?> patientComboBox = findComponentByName(parametersPanel, "patientComboBox");
-        if (patientComboBox == null || patientComboBox.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(this, "Выберите пациента", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        String patientInfo = (String) patientComboBox.getSelectedItem();
-        String patientId = patientInfo.substring(0, patientInfo.indexOf(" - "));
-
-        // Get patient object
-        Patient patient = patientService.getById(patientId);
-        if (patient == null) {
-            JOptionPane.showMessageDialog(this, "Пациент не найден", "Ошибка", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
+    public void printPatientReport() {
         try {
-            String outputPath = "reports/patient_" + patient.getId() + ".pdf";
-            File file = PDFGenerator.generatePatientReport(patient, null, outputPath);
+            String patientName = "Большаков Иван Дмитриевич";
+            Document document = new Document();
+            File outputDir = new File("reports");
+            if (!outputDir.exists()) outputDir.mkdirs();
+            String outputPath = "reports/patient_report_" + patientName.replace(" ", "_") + ".pdf";
 
-            if (file != null && file.exists()) {
-                int option = JOptionPane.showConfirmDialog(
-                        this,
-                        "Отчёт о пациенте успешно сформирован. Хотите его открыть??",
-                        "Отчет создан",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.INFORMATION_MESSAGE
-                );
+            PdfWriter.getInstance(document, new java.io.FileOutputStream(outputPath));
+            document.open();
 
-                if (option == JOptionPane.YES_OPTION) {
-                    // Open the PDF file with the default system viewer
-                    if (Desktop.isDesktopSupported()) {
-                        Desktop.getDesktop().open(file);
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Не удаётся автоматически открыть PDF-файл. Файл сохранён в: " + file.getAbsolutePath(), "Information", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Не удалось создать отчет о пациенте", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            // Шрифт с поддержкой кириллицы
+            BaseFont bf = BaseFont.createFont("C:/Windows/Fonts/arial.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font titleFont = new Font(bf, 16, Font.BOLD);
+            Font sectionFont = new Font(bf, 14, Font.BOLD);
+            Font normalFont = new Font(bf, 12);
+
+            // Заголовок отчёта
+            Paragraph title = new Paragraph("Отчёт по пациенту: " + patientName, titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+            document.add(new Paragraph(" "));
+
+            // --- Медицинские записи ---
+            Paragraph medRecordsTitle = new Paragraph("Медицинские записи", sectionFont);
+            document.add(medRecordsTitle);
+            document.add(new Paragraph(" "));
+
+            PdfPTable medTable = new PdfPTable(3);
+            medTable.setWidthPercentage(100);
+            medTable.setWidths(new float[]{2, 3, 5});
+            medTable.addCell(new Phrase("Дата", normalFont));
+            medTable.addCell(new Phrase("Врач", normalFont));
+            medTable.addCell(new Phrase("Описание", normalFont));
+
+            // Пример данных
+            Object[][] medRecords = {
+                    {"2025-06-01", "Иванов И.И.", "Общий осмотр, назначены анализы крови"},
+                    {"2025-06-05", "Смирнова А.А.", "Повторный осмотр, результаты анализов в норме"}
+            };
+
+            for (Object[] record : medRecords) {
+                medTable.addCell(new Phrase(record[0].toString(), normalFont));
+                medTable.addCell(new Phrase(record[1].toString(), normalFont));
+                medTable.addCell(new Phrase(record[2].toString(), normalFont));
             }
+
+            document.add(medTable);
+            document.add(new Paragraph(" "));
+
+            // --- Назначения ---
+            Paragraph prescriptionsTitle = new Paragraph("Назначения", sectionFont);
+            document.add(prescriptionsTitle);
+            document.add(new Paragraph(" "));
+
+            PdfPTable prescTable = new PdfPTable(3);
+            prescTable.setWidthPercentage(100);
+            prescTable.setWidths(new float[]{3, 2, 3});
+            prescTable.addCell(new Phrase("Дата", normalFont));
+            prescTable.addCell(new Phrase("Название лекарства", normalFont));
+            prescTable.addCell(new Phrase("Дозировка/Инструкции", normalFont));
+
+            Object[][] prescriptions = {
+                    {"2025-06-01", "Парацетамол", "500мг, 2 раза в день"},
+                    {"2025-06-01", "Витамин C", "1 таблетка в день"}
+            };
+
+            for (Object[] presc : prescriptions) {
+                prescTable.addCell(new Phrase(presc[0].toString(), normalFont));
+                prescTable.addCell(new Phrase(presc[1].toString(), normalFont));
+                prescTable.addCell(new Phrase(presc[2].toString(), normalFont));
+            }
+
+            document.add(prescTable);
+            document.add(new Paragraph(" "));
+
+            // --- Счета ---
+            Paragraph billsTitle = new Paragraph("Счета", sectionFont);
+            document.add(billsTitle);
+            document.add(new Paragraph(" "));
+
+            PdfPTable billsTable = new PdfPTable(4);
+            billsTable.setWidthPercentage(100);
+            billsTable.setWidths(new float[]{2, 2, 2, 2});
+            billsTable.addCell(new Phrase("Номер счета", normalFont));
+            billsTable.addCell(new Phrase("Дата", normalFont));
+            billsTable.addCell(new Phrase("Сумма", normalFont));
+            billsTable.addCell(new Phrase("Статус", normalFont));
+
+            Object[][] bills = {
+                    {"B001", "2025-06-01", "$150.00", "ОПЛАЧЕН"},
+                    {"B011", "2025-06-02", "$200.00", "ОПЛАЧЕН"},
+                    {"B013", "2025-06-04", "$170.25", "ОПЛАЧЕН"}
+            };
+
+            for (Object[] bill : bills) {
+                billsTable.addCell(new Phrase(bill[0].toString(), normalFont));
+                billsTable.addCell(new Phrase(bill[1].toString(), normalFont));
+                billsTable.addCell(new Phrase(bill[2].toString(), normalFont));
+                billsTable.addCell(new Phrase(bill[3].toString(), normalFont));
+            }
+
+            document.add(billsTable);
+
+            document.close();
+
+            File pdfFile = new File(outputPath);
+            if (Desktop.isDesktopSupported()) Desktop.getDesktop().open(pdfFile);
+
+            JOptionPane.showMessageDialog(null, "Отчёт по пациенту " + patientName + " создан и открыт");
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Ошибка создания отчета: " + e.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Ошибка при создании отчёта: " + e.getMessage());
         }
     }
 
