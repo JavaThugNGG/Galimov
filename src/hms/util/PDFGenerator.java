@@ -12,6 +12,7 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -20,10 +21,35 @@ import hms.model.*;
 
 public class PDFGenerator {
 
-    private static final Font TITLE_FONT = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
-    private static final Font SUBTITLE_FONT = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
-    private static final Font NORMAL_FONT = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
-    private static final Font SMALL_FONT = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL);
+    private static Font createRussianFont(float size, int style) {
+        try {
+            String fontPath = "/fonts/arialmt.ttf";
+            BaseFont baseFont = BaseFont.createFont(
+                    PDFGenerator.class.getResource(fontPath).getPath(),
+                    BaseFont.IDENTITY_H,
+                    BaseFont.EMBEDDED
+            );
+            return new Font(baseFont, size, style);
+        } catch (Exception e) {
+            try {
+                String systemFontPath = "C:/Windows/Fonts/arial.ttf";
+                BaseFont baseFont = BaseFont.createFont(
+                        systemFontPath,
+                        BaseFont.IDENTITY_H,
+                        BaseFont.EMBEDDED
+                );
+                return new Font(baseFont, size, style);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return new Font(Font.FontFamily.HELVETICA, size, style);
+            }
+        }
+    }
+
+    private static final Font TITLE_FONT = createRussianFont(18, Font.BOLD);
+    private static final Font SUBTITLE_FONT = createRussianFont(14, Font.BOLD);
+    private static final Font NORMAL_FONT = createRussianFont(12, Font.NORMAL);
+    private static final Font SMALL_FONT = createRussianFont(10, Font.NORMAL);
 
     public static File generatePatientReport(Patient patient, List<MedicalRecord> records, String outputPath) {
         if (patient == null || outputPath == null || outputPath.trim().isEmpty()) {
@@ -49,9 +75,9 @@ public class PDFGenerator {
 
             document.add(new Paragraph("Данные пациента:", SUBTITLE_FONT));
             document.add(new Paragraph("Идентификатор: " + safeString(patient.getId()), NORMAL_FONT));
-            document.add(new Paragraph("Имя: " + safeString(patient.getName()), NORMAL_FONT));
+            document.add(new Paragraph("ФИО: " + safeString(patient.getName()), NORMAL_FONT));
             document.add(new Paragraph("Возраст: " + patient.getAge(), NORMAL_FONT));
-            document.add(new Paragraph("Контакт: " + safeString(patient.getContact()), NORMAL_FONT));
+            document.add(new Paragraph("Номер телефона: " + safeString(patient.getContact()), NORMAL_FONT));
             document.add(new Paragraph("Электронная почта: " + safeString(patient.getEmail()), NORMAL_FONT));
             document.add(new Paragraph("Адрес: " + safeString(patient.getAddress()), NORMAL_FONT));
             document.add(new Paragraph("Пол: " + safeString(patient.getGender()), NORMAL_FONT));
@@ -121,8 +147,8 @@ public class PDFGenerator {
 
             document.add(new Paragraph("Данные пациента:", SUBTITLE_FONT));
             document.add(new Paragraph("Идентификатор: " + safeString(patient.getId()), NORMAL_FONT));
-            document.add(new Paragraph("Имя: " + safeString(patient.getName()), NORMAL_FONT));
-            document.add(new Paragraph("Контакт: " + safeString(patient.getContact()), NORMAL_FONT));
+            document.add(new Paragraph("ФИО: " + safeString(patient.getName()), NORMAL_FONT));
+            document.add(new Paragraph("Номер телефона: " + safeString(patient.getContact()), NORMAL_FONT));
             document.add(new Paragraph(" "));
 
             document.add(new Paragraph("Платежные реквизиты:", SUBTITLE_FONT));
@@ -140,16 +166,16 @@ public class PDFGenerator {
                     if (item != null) {
                         table.addCell(new Phrase(safeString(item.getDescription()), SMALL_FONT));
                         table.addCell(new Phrase(String.valueOf(item.getQuantity()), SMALL_FONT));
-                        table.addCell(new Phrase(String.format("$%.2f", item.getUnitPrice()), SMALL_FONT));
-                        table.addCell(new Phrase(String.format("$%.2f", item.getAmount()), SMALL_FONT));
+                        table.addCell(new Phrase(String.format("%.2f", item.getUnitPrice()), SMALL_FONT));
+                        table.addCell(new Phrase(String.format("%.2f", item.getAmount()), SMALL_FONT));
                         subtotal += item.getAmount();
                     }
                 }
             } else {
                 table.addCell(new Phrase("Плата за консультацию", SMALL_FONT));
                 table.addCell(new Phrase("1", SMALL_FONT));
-                table.addCell(new Phrase(String.format("$%.2f", billing.getTotalAmount()), SMALL_FONT));
-                table.addCell(new Phrase(String.format("$%.2f", billing.getTotalAmount()), SMALL_FONT));
+                table.addCell(new Phrase(String.format("%.2f", billing.getTotalAmount()), SMALL_FONT));
+                table.addCell(new Phrase(String.format("%.2f", billing.getTotalAmount()), SMALL_FONT));
                 subtotal = billing.getTotalAmount();
             }
 
@@ -161,21 +187,21 @@ public class PDFGenerator {
             summaryTable.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
             summaryTable.addCell(new Phrase("Итого:", NORMAL_FONT));
-            summaryTable.addCell(new Phrase(String.format("$%.2f", subtotal), NORMAL_FONT));
+            summaryTable.addCell(new Phrase(String.format("%.2f", subtotal), NORMAL_FONT));
 
             double discountAmount = subtotal * (billing.getDiscount() / 100.0);
             summaryTable.addCell(new Phrase("Скидка (" + billing.getDiscount() + "%):", NORMAL_FONT));
-            summaryTable.addCell(new Phrase(String.format("$%.2f", discountAmount), NORMAL_FONT));
+            summaryTable.addCell(new Phrase(String.format("%.2f", discountAmount), NORMAL_FONT));
 
             double taxAmount = subtotal * (billing.getTax() / 100.0);
             summaryTable.addCell(new Phrase("Налог (" + billing.getTax() + "%):", NORMAL_FONT));
-            summaryTable.addCell(new Phrase(String.format("$%.2f", taxAmount), NORMAL_FONT));
+            summaryTable.addCell(new Phrase(String.format("%.2f", taxAmount), NORMAL_FONT));
 
             PdfPCell totalCell = new PdfPCell(new Phrase("Всего:", SUBTITLE_FONT));
             totalCell.setBorder(0);
             summaryTable.addCell(totalCell);
 
-            PdfPCell totalAmountCell = new PdfPCell(new Phrase(String.format("$%.2f", billing.getTotalAmount()), SUBTITLE_FONT));
+            PdfPCell totalAmountCell = new PdfPCell(new Phrase(String.format("%.2f", billing.getTotalAmount()), SUBTITLE_FONT));
             totalAmountCell.setBorder(0);
             summaryTable.addCell(totalAmountCell);
 
@@ -218,13 +244,13 @@ public class PDFGenerator {
             document.add(new Paragraph(" "));
 
             document.add(new Paragraph("Данные пациента:", SUBTITLE_FONT));
-            document.add(new Paragraph("Имя: " + patient.getName(), NORMAL_FONT));
+            document.add(new Paragraph("ФИО: " + patient.getName(), NORMAL_FONT));
             document.add(new Paragraph("Идентификатор: " + patient.getId(), NORMAL_FONT));
             document.add(new Paragraph("Возраст: " + patient.getAge(), NORMAL_FONT));
             document.add(new Paragraph(" "));
 
             document.add(new Paragraph("Данные врача:", SUBTITLE_FONT));
-            document.add(new Paragraph("Имя: " + doctor.getName(), NORMAL_FONT));
+            document.add(new Paragraph("ФИО: " + doctor.getName(), NORMAL_FONT));
             document.add(new Paragraph("Специализация: " + doctor.getSpecialization(), NORMAL_FONT));
             document.add(new Paragraph(" "));
 

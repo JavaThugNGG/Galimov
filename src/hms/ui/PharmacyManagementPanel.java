@@ -510,7 +510,7 @@ public class PharmacyManagementPanel extends JPanel {
         addDetailRow(infoPanel, "Название:", medicine.getName());
         addDetailRow(infoPanel, "Производитель:", medicine.getManufacturer());
         addDetailRow(infoPanel, "Категория:", medicine.getCategory());
-        addDetailRow(infoPanel, "Цена:", String.format("$%.2f", medicine.getPrice()));
+        addDetailRow(infoPanel, "Цена:", String.format("%.2f", medicine.getPrice()));
         addDetailRow(infoPanel, "Количество:", String.valueOf(medicine.getQuantity()));
         addDetailRow(infoPanel, "Описание:", medicine.getDescription());
 
@@ -551,7 +551,7 @@ public class PharmacyManagementPanel extends JPanel {
             total += price * quantity;
         }
 
-        totalLabel.setText(String.format("Всего: $%.2f", total));
+        totalLabel.setText(String.format("Всего: %.2f", total));
     }
 
     private void addDetailRow(JPanel panel, String label, String value) {

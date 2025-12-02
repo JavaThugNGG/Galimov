@@ -1,15 +1,9 @@
 package hms.ui;
 
+import hms.model.Billing;
 import hms.model.Patient;
 import hms.service.PatientService;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import hms.util.PDFGenerator;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -109,50 +103,31 @@ public class BillingManagementPanel extends JPanel {
 
     private void loadBillings() {
         tableModel.setRowCount(0);
+
         addSampleBillings();
     }
 
     private void addSampleBillings() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Object[] row2 = {"B002",  "Соколова Мария Андреевна", "2024-06-10", "3200.50", "НЕ ОПЛАЧЕНО"};
+        Object[] row3 = {"B003",  "Кузнецов Сергей Павлович", "2024-06-05", "7850.75", "ОПЛАЧЕНО"};
+        Object[] row4 = {"B004",  "Громова Анна Михайловна", "2024-06-01", "2950.00", "НЕ ОПЛАЧЕНО"};
+        Object[] row5 = {"B005",  "Ершов Дмитрий Семёнович", "2024-06-15", "1750.25", "ОПЛАЧЕНО"};
+        Object[] row6 = {"B006",  "Орлова Ольга Николаевна", "2024-06-12", "5300.00", "ОПЛАЧЕНО"};
+        Object[] row7 = {"B007",  "Макаров Алексей Игоревич", "2024-06-08", "9500.00", "НЕ ОПЛАЧЕНО"};
+        Object[] row8 = {"B008",  "Сергеева Екатерина Олеговна", "2024-06-18", "3100.00", "ОПЛАЧЕНО"};
+        Object[] row9 = {"B009",  "Александров Никита Романович", "2024-06-03", "2450.50", "НЕ ОПЛАЧЕНО"};
+        Object[] row10 = {"B010",  "Мельникова Виктория Евгеньевна", "2024-06-14", "4200.00", "ОПЛАЧЕНО"};
 
-        Object[][] bills = {
-                {"B001", "Большаков Иван Дмитриевич", "2025-06-01", "$150.00", "ОПЛАЧЕН"},
-                {"B002", "Соколова Мария Андреевна", "2025-06-10", "$200.50", "НЕ ОПЛАЧЕН"},
-                {"B003", "Кузнецов Сергей Павлович", "2025-06-05", "$320.75", "ОПЛАЧЕН"},
-                {"B004", "Громова Анна Михайловна", "2025-06-01", "$95.25", "НЕ ОПЛАЧЕН"},
-                {"B005", "Ершов Дмитрий Семёнович", "2025-06-12", "$120.00", "ОПЛАЧЕН"},
-                {"B006", "Орлова Ольга Николаевна", "2025-06-03", "$180.50", "ОПЛАЧЕН"},
-                {"B007", "Макаров Алексей Игоревич", "2025-06-08", "$250.00", "НЕ ОПЛАЧЕН"},
-                {"B008", "Сергеевa Екатерина Олеговна", "2025-06-09", "$130.25", "ОПЛАЧЕН"},
-                {"B009", "Александров Никита Романович", "2025-06-11", "$90.00", "НЕ ОПЛАЧЕН"},
-                {"B010", "Мельникова Виктория Евгеньевна", "2025-06-07", "$160.75", "ОПЛАЧЕН"},
-                {"B011", "Филиппов Роман Артёмович", "2025-06-02", "$200.00", "ОПЛАЧЕН"},
-                {"B012", "Савельева Алина Владиславовна", "2025-06-06", "$140.50", "НЕ ОПЛАЧЕН"},
-                {"B013", "Исламов Тимур Альбертович", "2025-06-04", "$170.25", "ОПЛАЧЕН"},
-                {"B014", "Кириллова Полина Сергеевна", "2025-06-05", "$155.00", "НЕ ОПЛАЧЕН"},
-                {"B015", "Громов Георгий Витальевич", "2025-06-03", "$210.75", "ОПЛАЧЕН"},
-                {"B016", "Кожевникова Светлана Петровна", "2025-06-10", "$125.50", "ОПЛАЧЕН"},
-                {"B017", "Воронцов Владимир Давидович", "2025-06-08", "$300.00", "НЕ ОПЛАЧЕН"},
-                {"B018", "Лебедева Яна Ильинична", "2025-06-12", "$115.25", "ОПЛАЧЕН"},
-                {"B019", "Гаврилов Павел Тимофеевич", "2025-06-06", "$220.50", "ОПЛАЧЕН"},
-                {"B020", "Фролова Людмила Константиновна", "2025-06-09", "$190.75", "НЕ ОПЛАЧЕН"},
-                {"B021", "Ермаков Константин Львович", "2025-06-07", "$130.00", "ОПЛАЧЕН"},
-                {"B022", "Щукина Елена Валерьевна", "2025-06-05", "$145.50", "НЕ ОПЛАЧЕН"},
-                {"B023", "Астахов Максим Андреевич", "2025-06-04", "$160.25", "ОПЛАЧЕН"},
-                {"B024", "Смирнова Татьяна Вячеславовна", "2025-06-03", "$210.00", "НЕ ОПЛАЧЕН"},
-                {"B025", "Журавлёв Игорь Никитич", "2025-06-08", "$230.50", "ОПЛАЧЕН"},
-                {"B026", "Белова Юлия Михайловна", "2025-06-06", "$125.75", "ОПЛАЧЕН"},
-                {"B027", "Шестаков Степан Арсеньевич", "2025-06-10", "$95.00", "НЕ ОПЛАЧЕН"},
-                {"B028", "Панфилова Алёна Георгиевна", "2025-06-09", "$135.50", "ОПЛАЧЕН"},
-                {"B029", "Рожков Глеб Денисович", "2025-06-07", "$180.25", "ОПЛАЧЕН"},
-                {"B030", "Волкова Ксения Александровна", "2025-06-05", "$155.50", "НЕ ОПЛАЧЕН"}
-        };
-
-        for (Object[] row : bills) {
-            tableModel.addRow(row);
-        }
+        tableModel.addRow(row2);
+        tableModel.addRow(row3);
+        tableModel.addRow(row4);
+        tableModel.addRow(row5);
+        tableModel.addRow(row6);
+        tableModel.addRow(row7);
+        tableModel.addRow(row8);
+        tableModel.addRow(row9);
+        tableModel.addRow(row10);
     }
-
 
     private void searchBillings() {
         String query = searchField.getText().trim().toLowerCase();
@@ -163,6 +138,7 @@ public class BillingManagementPanel extends JPanel {
         }
 
         tableModel.setRowCount(0);
+
         addSampleBillings();
 
         for (int i = tableModel.getRowCount() - 1; i >= 0; i--) {
@@ -221,7 +197,7 @@ public class BillingManagementPanel extends JPanel {
         itemsPanel.setBorder(new EmptyBorder(10, 0, 10, 0));
 
         JLabel itemsLabel = new JLabel("Элементы счета:");
-        itemsLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
+        itemsLabel.setFont(new Font("Arial", Font.BOLD, 14));
 
         String[] columns = {"Описание", "Количество", "Цена за единицу", "Сумма"};
         DefaultTableModel itemsModel = new DefaultTableModel(columns, 0) {
@@ -249,17 +225,17 @@ public class BillingManagementPanel extends JPanel {
         summaryPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
 
         JLabel subtotalLabel = new JLabel("Промежуточный итог:");
-        JTextField subtotalField = new JTextField("$0.00");
+        JTextField subtotalField = new JTextField("0.00");
         subtotalField.setEditable(false);
 
         JLabel discountLabel = new JLabel("Скидка (%):");
         JTextField discountField = new JTextField("0");
 
-        JLabel taxLabel = new JLabel("Налош (%):");
+        JLabel taxLabel = new JLabel("Налог (%):");
         JTextField taxField = new JTextField("0");
 
         JLabel totalLabel = new JLabel("Итог:");
-        JTextField totalField = new JTextField("$0.00");
+        JTextField totalField = new JTextField("0.00");
         totalField.setEditable(false);
 
         summaryPanel.add(subtotalLabel);
@@ -277,7 +253,7 @@ public class BillingManagementPanel extends JPanel {
         JLabel statusLabel = new JLabel("Статус платежа:");
         JComboBox<String> statusComboBox = new JComboBox<>(new String[]{"ОПЛАЧЕН", "НЕ ОПЛАЧЕН"});
 
-        JLabel methodLabel = new JLabel("Payment Method:");
+        JLabel methodLabel = new JLabel("Метод оплаты:");
         JComboBox<String> methodComboBox = new JComboBox<>(new String[]{"Наличные", "Кредитная карта", "Дебетовая карта", "Страхование", "Другое"});
 
         paymentPanel.add(statusLabel);
@@ -335,6 +311,7 @@ public class BillingManagementPanel extends JPanel {
 
         saveButton.addActionListener(e -> {
             try {
+                // Validate input
                 if (patientComboBox.getSelectedIndex() == -1) {
                     JOptionPane.showMessageDialog(dialog, "Выберите пациента", "Ошибка ввода", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -392,7 +369,7 @@ public class BillingManagementPanel extends JPanel {
         JTextField priceField = new JTextField();
 
         JLabel amountLabel = new JLabel("Сумма:");
-        JTextField amountField = new JTextField("$0.00");
+        JTextField amountField = new JTextField("0.00");
         amountField.setEditable(false);
 
         formPanel.add(descriptionLabel);
@@ -421,9 +398,9 @@ public class BillingManagementPanel extends JPanel {
                     int quantity = Integer.parseInt(quantityField.getText().trim());
                     double price = Double.parseDouble(priceField.getText().trim());
                     double amount = quantity * price;
-                    amountField.setText(String.format("$%.2f", amount));
+                    amountField.setText(String.format("%.2f", amount));
                 } catch (NumberFormatException ex) {
-                    amountField.setText("$0.00");
+                    amountField.setText("0.00");
                 }
             }
         };
@@ -468,8 +445,8 @@ public class BillingManagementPanel extends JPanel {
                 Object[] row = {
                         description,
                         quantity,
-                        String.format("$%.2f", price),
-                        String.format("$%.2f", amount)
+                        String.format("%.2f", price),
+                        String.format("%.2f", amount)
                 };
 
                 itemsModel.addRow(row);
@@ -516,8 +493,8 @@ public class BillingManagementPanel extends JPanel {
         double taxAmount = subtotal * (tax / 100.0);
         double total = subtotal - discountAmount + taxAmount;
 
-        subtotalField.setText(String.format("$%.2f", subtotal));
-        totalField.setText(String.format("$%.2f", total));
+        subtotalField.setText(String.format("%.2f", subtotal));
+        totalField.setText(String.format("$.2f", total));
     }
 
     private void showEditBillDialog() {
@@ -578,7 +555,7 @@ public class BillingManagementPanel extends JPanel {
         detailsPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         JLabel titleLabel = new JLabel("Информация по счета");
-        titleLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 18));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JPanel infoPanel = new JPanel(new GridLayout(0, 2, 10, 10));
@@ -595,7 +572,7 @@ public class BillingManagementPanel extends JPanel {
         detailsPanel.add(infoPanel);
 
         JLabel itemsLabel = new JLabel("Элемента счета");
-        itemsLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 18));
+        itemsLabel.setFont(new Font("Arial", Font.BOLD, 18));
         itemsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         String[] columns = {"Описание", "Количество", "Цена за единицу", "Сумма"};
@@ -611,9 +588,9 @@ public class BillingManagementPanel extends JPanel {
         itemsScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         itemsScrollPane.setPreferredSize(new Dimension(550, 200));
 
-        Object[] item1 = {"Плата за консультацию", 1, "$50.00", "$50.00"};
-        Object[] item2 = {"Лекарство - Парацетамол", 2, "$5.99", "$11.98"};
-        Object[] item3 = {"Анализ крови", 1, "$35.00", "$35.00"};
+        Object[] item1 = {"Плата за консультацию", 1, "5000", "5000"};
+        Object[] item2 = {"Лекарство - Парацетамол", 2, "599", "1198"};
+        Object[] item3 = {"Анализ крови", 1, "3500", "3500"};
 
         itemsModel.addRow(item1);
         itemsModel.addRow(item2);
@@ -643,81 +620,61 @@ public class BillingManagementPanel extends JPanel {
         dialog.setVisible(true);
     }
 
-    public void printBill() {
+    private void printBill() {
+        int selectedRow = billingTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Выберите счет для печати", "Нет выбора", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String billId = (String) billingTable.getValueAt(selectedRow, 0);
+        String patientName = (String) billingTable.getValueAt(selectedRow, 1);
+
         try {
-            String billId = "B001";
-            String date = "2025-11-30";
-            String patientName = "Большаков Иван Дмитриевич";
-            String status = "ОПЛАЧЕН";
+            Billing billing = new Billing(billId, "P001", new Date());
+            billing.setTotalAmount(Double.parseDouble(((String) billingTable.getValueAt(selectedRow, 3)).substring(1)));
+            billing.setPaymentStatus((String) billingTable.getValueAt(selectedRow, 4));
 
-            Document document = new Document();
-            File outputDir = new File("reports");
-            if (!outputDir.exists()) outputDir.mkdirs();
+            Patient patient = new Patient("P001", patientName, 35, "123-456-7890", "Высокая температура");
+
+            billing.addItem(new Billing.BillItem("Плата за консультацию", 5000, 1));
+            billing.addItem(new Billing.BillItem("Лекарство - Парацетамол", 599, 2));
+            billing.addItem(new Billing.BillItem("Анализ крови", 350, 1));
+
             String outputPath = "reports/bill_" + billId + ".pdf";
+            File file = PDFGenerator.generateBillingReport(billing, patient, outputPath);
 
-            PdfWriter.getInstance(document, new java.io.FileOutputStream(outputPath));
-            document.open();
+            if (file != null && file.exists()) {
+                int option = JOptionPane.showConfirmDialog(
+                        this,
+                        "Счёт успешно сформирован. Хотите его открыть??",
+                        "Счет создан",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE
+                );
 
-            BaseFont bf = BaseFont.createFont("C:/Windows/Fonts/arial.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            Font font = new Font(bf, 12);
-
-            Paragraph title = new Paragraph("Счет №" + billId, new Font(bf, 16, Font.BOLD));
-            title.setAlignment(Element.ALIGN_CENTER);
-            document.add(title);
-
-            document.add(new Paragraph("Дата: " + date, font));
-            document.add(new Paragraph("Пациент: " + patientName, font));
-            document.add(new Paragraph("Статус: " + status, font));
-            document.add(new Paragraph(" "));
-
-            PdfPTable table = new PdfPTable(4);
-            table.setWidthPercentage(100);
-            table.setWidths(new float[]{4, 1, 2, 2});
-            table.addCell(new Phrase("Описание", font));
-            table.addCell(new Phrase("Кол-во", font));
-            table.addCell(new Phrase("Цена", font));
-            table.addCell(new Phrase("Сумма", font));
-
-            Object[][] items = {
-                    {"Консультация", 1, "$50.00", "$50.00"},
-                    {"Парацетамол", 2, "$5.99", "$11.98"},
-                    {"Анализ крови", 1, "$35.00", "$35.00"}
-            };
-
-            double subtotal = 0.0;
-            for (Object[] item : items) {
-                table.addCell(new Phrase(item[0].toString(), font));
-                table.addCell(new Phrase(item[1].toString(), font));
-                table.addCell(new Phrase(item[2].toString(), font));
-                table.addCell(new Phrase(item[3].toString(), font));
-
-                subtotal += Double.parseDouble(item[3].toString().replace("$", "").replace(",", "."));
+                if (option == JOptionPane.YES_OPTION) {
+                    if (Desktop.isDesktopSupported()) {
+                        Desktop.getDesktop().open(file);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Не удаётся автоматически открыть PDF-файл. Файл сохранён в: " + file.getAbsolutePath(), "Информация", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Не удалось создать счет", "Ошибка", JOptionPane.ERROR_MESSAGE);
             }
-
-            document.add(table);
-            document.add(new Paragraph(" "));
-            document.add(new Paragraph(String.format("Промежуточный итог: $%.2f", subtotal), font));
-            document.add(new Paragraph(String.format("Итог: $%.2f", subtotal), font));
-
-            document.close();
-
-            File pdfFile = new File(outputPath);
-            if (Desktop.isDesktopSupported()) Desktop.getDesktop().open(pdfFile);
-
-            JOptionPane.showMessageDialog(null, "Счет для Ивана Большакова создан и открыт");
-
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Ошибка создания счета: " + e.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Ошибка при создании счета: " + e.getMessage());
         }
     }
 
     private void addDetailRow(JPanel panel, String label, String value) {
         JLabel labelComponent = new JLabel(label);
-        labelComponent.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
+        labelComponent.setFont(new Font("Arial", Font.BOLD, 12));
 
         JLabel valueComponent = new JLabel(value != null && !value.isEmpty() ? value : "N/A");
-        valueComponent.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
+        valueComponent.setFont(new Font("Arial", Font.PLAIN, 12));
 
         panel.add(labelComponent);
         panel.add(valueComponent);
